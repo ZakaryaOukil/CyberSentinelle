@@ -41,29 +41,46 @@ const ChartModal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
   
   return (
-    <div 
-      className="fixed inset-0 flex items-center justify-center p-4"
-      style={{ zIndex: 9999, backgroundColor: 'rgba(0, 0, 0, 0.85)' }}
-      onClick={onClose}
-    >
+    <>
+      {/* Overlay - couche séparée pour garantir la couverture */}
       <div 
-        className="bg-card border border-border rounded-xl w-full max-w-5xl max-h-[90vh] overflow-auto shadow-2xl"
-        style={{ zIndex: 10000 }}
-        onClick={e => e.stopPropagation()}
+        className="fixed inset-0"
+        style={{ 
+          zIndex: 99999, 
+          backgroundColor: 'rgba(0, 0, 0, 0.9)',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0
+        }}
+        onClick={onClose}
+        data-testid="chart-modal-overlay"
+      />
+      {/* Contenu du modal */}
+      <div 
+        className="fixed inset-0 flex items-center justify-center p-4 pointer-events-none"
+        style={{ zIndex: 100000 }}
       >
-        <div className="flex items-center justify-between p-4 border-b border-border sticky top-0 bg-card">
-          <h3 className="text-lg font-bold font-mono">{title}</h3>
-          <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="w-5 h-5" />
-          </Button>
-        </div>
-        <div className="p-6">
-          <div className="h-[500px]">
-            {children}
+        <div 
+          className="bg-card border border-border rounded-xl w-full max-w-5xl max-h-[90vh] overflow-auto shadow-2xl pointer-events-auto"
+          onClick={e => e.stopPropagation()}
+          data-testid="chart-modal-content"
+        >
+          <div className="flex items-center justify-between p-4 border-b border-border sticky top-0 bg-card">
+            <h3 className="text-lg font-bold font-mono">{title}</h3>
+            <Button variant="ghost" size="icon" onClick={onClose} data-testid="chart-modal-close">
+              <X className="w-5 h-5" />
+            </Button>
+          </div>
+          <div className="p-6">
+            <div className="h-[500px]">
+              {children}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
