@@ -41,7 +41,9 @@ const CHART_COLORS = ["#06b6d4", "#10b981", "#ef4444", "#f59e0b", "#8b5cf6", "#3
 const ChartModal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
   
-  return (
+  // Utiliser createPortal pour injecter le modal directement dans le body
+  // Cela garantit que le modal apparaît au-dessus de tous les autres éléments
+  return createPortal(
     <>
       {/* Overlay - couche séparée pour garantir la couverture */}
       <div 
@@ -81,7 +83,8 @@ const ChartModal = ({ isOpen, onClose, title, children }) => {
           </div>
         </div>
       </div>
-    </>
+    </>,
+    document.body
   );
 };
 
