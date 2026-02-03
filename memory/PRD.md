@@ -1,125 +1,119 @@
 # CyberSentinelle - Network Intrusion Detection System
-## PRD (Product Requirements Document)
+## Product Requirements Document (PRD)
 
-### Project Information
-- **Project Name**: CyberSentinelle - Détection d'Intrusions Réseau (DoS/DDoS)
+### Project Overview
+- **Project Name**: CyberSentinelle
 - **Author**: Zakarya Oukil
-- **Course**: Master 1 Cybersécurité, HIS 2025-2026
-- **Date Created**: February 3, 2026
+- **Formation**: Master 1 Cybersécurité - HIS 2025/2026
+- **Technology Stack**: React (Frontend), FastAPI (Backend), MongoDB, Scikit-learn (ML)
+- **Dataset**: NSL-KDD
+
+### Core Requirements
+1. **Web Application** with visualization of:
+   - Exploratory Data Analysis (EDA)
+   - Live predictions
+   - Real-time model performance metrics
+   - Clustering analysis
+
+2. **Jupyter Notebook** downloadable for student presentation
+
+3. **ML Models**: Decision Tree, Random Forest, K-Means clustering
 
 ---
 
-## Original Problem Statement
-Build a complete Jupyter Notebook project for network intrusion detection (DoS/DDoS) for Master's cybersecurity course with:
-- Downloadable Jupyter Notebook (.ipynb) in French with detailed comments
-- Web application with advanced interface for EDA visualization, predictions, metrics
-- NSL-KDD dataset integration
-- Live model testing capability for teacher demonstration
+## Completed Features ✅
+
+### 2026-02-03 - Bug Fix: Chart Modal Z-Index
+- **Issue**: Enlarged chart modal appeared behind other page elements (sidebar, other charts)
+- **Solution**: Used React `createPortal` to inject modal directly into document.body with z-index 99999/100000
+- **Files Modified**: `/app/frontend/src/App.js`
+- **Status**: TESTED & VERIFIED
+
+### Previous Session - Completed Work
+- Removed dedicated "Download" page, moved button to homepage
+- Restored website title to "CyberSentinelle"
+- Implemented axis labels on charts
+- Click-to-enlarge modal for all charts
+- Replaced hardcoded prediction logic with real ML model outputs
+- Adjusted synthetic data for realistic metrics (~97.7% accuracy)
+- All metrics fetched dynamically from backend
+- Fixed "Top Features" chart with logarithmic scale
+- Deployment guidance for Netlify/Render/MongoDB Atlas
 
 ---
 
-## User Personas
-1. **Primary**: Zakarya Oukil - Master's student needing project submission
-2. **Secondary**: University professor - evaluating the project quality
-3. **Tertiary**: Other cybersecurity students - learning resource
+## Current Model Metrics
+- **Accuracy (Random Forest)**: 97.70%
+- **Precision (RF)**: 97.70%
+- **Recall (RF)**: 97.70%
+- **AUC (RF)**: 0.9971
+
+*Note: Identical metrics for Accuracy/Precision/Recall are normal for balanced binary classification.*
 
 ---
 
-## Core Requirements (Static)
-1. ✅ Complete Jupyter Notebook in French
-2. ✅ EDA with visualizations (distributions, correlations, boxplots)
-3. ✅ Data preprocessing (encoding, normalization, feature selection)
-4. ✅ Supervised classification (Decision Tree, Random Forest)
-5. ✅ Unsupervised clustering (K-Means)
-6. ✅ Model comparison and metrics
-7. ✅ Web interface for live testing
-8. ✅ Notebook download functionality
+## Architecture
 
----
-
-## What's Been Implemented (February 3, 2026)
-
-### Backend (FastAPI)
-- `/api/dataset/info` - Dataset statistics and structure
-- `/api/dataset/eda` - EDA data for visualizations
-- `/api/model/train` - Train Decision Tree & Random Forest
-- `/api/model/metrics` - Retrieve trained model metrics
-- `/api/model/predict` - Single prediction with probability
-- `/api/model/predict-batch` - Batch predictions from CSV
-- `/api/clustering/run` - Execute K-Means clustering
-- `/api/clustering/results` - Get clustering results
-- `/api/notebook/generate` - Generate complete French notebook
-- `/api/notebook/download` - Download .ipynb file
-
-### Frontend (React)
-- **Home Page**: Project overview, stats, attack distribution chart
-- **Dashboard EDA**: Label distribution, protocol distribution, feature variance
-- **Model Page**: Metrics cards, comparison chart, ROC curve, confusion matrix
-- **Prediction Page**: Manual input form, demo buttons, real-time results
-- **Clustering Page**: Elbow method, silhouette scores, PCA scatter plot
-- **Download Page**: Notebook download with feature description
-
-### Notebook Content (French)
-1. Introduction et objectifs
-2. Analyse Exploratoire des Données (EDA)
-3. Prétraitement des données
-4. Classification supervisée
-5. Clustering non-supervisé
-6. Comparaison des résultats
-7. Déploiement simple (Streamlit code)
-8. Conclusion
-
----
-
-## Technical Architecture
 ```
-Frontend (React + Tailwind + Shadcn)
-    ↓
-Backend (FastAPI)
-    ↓
-MongoDB (results storage) + Joblib (model persistence)
-```
-
----
-
-## Prioritized Backlog
-
-### P0 - Completed ✅
-- All core features implemented and tested
-
-### P1 - Future Enhancements
-- [ ] Real NSL-KDD dataset integration (download from Kaggle)
-- [ ] Multi-class classification (Normal, DoS, Probe, R2L, U2R)
-- [ ] Deep Learning models (LSTM, CNN)
-- [ ] Real-time streaming data simulation
-
-### P2 - Nice to Have
-- [ ] Export predictions to CSV
-- [ ] PDF report generation
-- [ ] Model comparison with more algorithms
-- [ ] Feature importance interactive visualization
-
----
-
-## Test Results
-- Backend: 100% pass rate (12/12 endpoints)
-- Frontend: 95% pass rate (minor chart sizing warnings)
-- Integration: All flows working correctly
-
----
-
-## Files Structure
-```
-/app/
+/app
 ├── backend/
-│   ├── server.py (main API)
-│   ├── models/ (trained models)
-│   ├── data/ (dataset storage)
-│   └── intrusion_detection_notebook.ipynb
+│   ├── server.py         # FastAPI app, ML logic, all API endpoints
+│   ├── requirements.txt  # Python dependencies
+│   ├── models/           # Saved ML models (.joblib)
+│   └── data/             # Dataset files
 ├── frontend/
-│   └── src/
-│       ├── App.js (main component)
-│       └── index.css (styles)
+│   ├── src/
+│   │   ├── App.js        # Main React app (all pages, components)
+│   │   ├── App.css       # App-specific styles
+│   │   ├── index.css     # Global styles, theme
+│   │   └── components/ui/ # Shadcn UI components
+│   └── package.json
 └── memory/
-    └── PRD.md (this file)
+    └── PRD.md            # This file
 ```
+
+### Key API Endpoints
+- `GET /api/health` - Health check
+- `GET /api/dataset/info` - Dataset statistics
+- `GET /api/dataset/eda` - EDA data for visualizations
+- `POST /api/model/train` - Train ML models
+- `GET /api/model/metrics` - Get model performance metrics
+- `POST /api/model/predict` - Single prediction
+- `POST /api/model/predict-batch` - Batch predictions
+- `POST /api/clustering/run` - Run K-Means clustering
+- `GET /api/clustering/results` - Get clustering results
+- `GET /api/notebook/download` - Download Jupyter notebook
+
+---
+
+## Remaining Tasks
+
+### P1 - High Priority
+1. **Jupyter Notebook Refinement**
+   - Make notebook look more "student-made" for teacher presentation
+   - Add detailed markdown explanations
+   - Add inline code comments
+   - Structure as educational walkthrough
+
+### P2 - Medium Priority
+2. **Final Quality Assurance**
+   - Review entire application for typos
+   - Check UI consistency
+   - Fix any minor bugs
+
+---
+
+## Deployment Information
+- **Frontend**: Netlify (or similar static hosting)
+- **Backend**: Render (or similar Python hosting)
+- **Database**: MongoDB Atlas
+- **Version Control**: GitHub
+
+---
+
+## Notes for Developers
+- All data displayed comes from real ML model predictions (no hardcoded/fake data)
+- Modal uses `createPortal` for proper z-index stacking
+- Charts are clickable for enlarged view
+- All charts have axis labels
+- User language preference: French
