@@ -67,7 +67,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 <Shield className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-foreground font-mono">IDS Project</h1>
+                <h1 className="text-lg font-bold text-foreground font-mono">CyberSentinelle</h1>
                 <p className="text-xs text-muted-foreground">Détection d'intrusions</p>
               </div>
             </div>
