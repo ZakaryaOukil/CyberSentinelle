@@ -1,0 +1,164 @@
+{
+  "project_name": "CyberSentinelle - Network Intrusion Detection System",
+  "design_philosophy": {
+    "archetype": "Tactical Cyber-Sec (Electric & Neon + Swiss High-Contrast)",
+    "vibe": "Elite, Analytical, Defensive, Kinetic",
+    "core_principles": [
+      "Data Density over Decoration",
+      "Neon signals status, Darkness signals depth",
+      "Motion implies activity (live monitoring)",
+      "Academic Rigor (Clear labels, no chart junk)"
+    ]
+  },
+  "typography": {
+    "font_family": {
+      "headings": "JetBrains Mono, monospace",
+      "body": "Plus Jakarta Sans, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "scaling": {
+      "h1": "text-4xl md:text-5xl font-bold tracking-tight",
+      "h2": "text-3xl font-semibold tracking-tight",
+      "h3": "text-2xl font-medium",
+      "body": "text-base leading-relaxed text-muted-foreground",
+      "caption": "text-xs font-mono uppercase tracking-widest text-muted-foreground/70"
+    }
+  },
+  "colors": {
+    "background": {
+      "default": "#020617",
+      "paper": "#0f172a",
+      "subtle": "#1e293b"
+    },
+    "primary": {
+      "default": "#06b6d4",
+      "foreground": "#000000",
+      "glow": "0 0 20px rgba(6, 182, 212, 0.5)"
+    },
+    "secondary": {
+      "default": "#3b82f6",
+      "foreground": "#ffffff"
+    },
+    "accent": {
+      "danger": "#ef4444",
+      "warning": "#f59e0b",
+      "success": "#10b981",
+      "info": "#8b5cf6"
+    },
+    "border": {
+      "default": "rgba(148, 163, 184, 0.1)",
+      "active": "rgba(6, 182, 212, 0.5)"
+    }
+  },
+  "tailwind_config_extension": {
+    "colors": {
+      "background": "hsl(222, 47%, 11%)",
+      "foreground": "hsl(210, 40%, 98%)",
+      "card": "hsl(222, 47%, 11%)",
+      "card-foreground": "hsl(210, 40%, 98%)",
+      "popover": "hsl(222, 47%, 11%)",
+      "popover-foreground": "hsl(210, 40%, 98%)",
+      "primary": "hsl(186, 70%, 50%)",
+      "primary-foreground": "hsl(222, 47%, 11%)",
+      "secondary": "hsl(217.2, 32.6%, 17.5%)",
+      "secondary-foreground": "hsl(210, 40%, 98%)",
+      "muted": "hsl(217.2, 32.6%, 17.5%)",
+      "muted-foreground": "hsl(215, 20.2%, 65.1%)",
+      "accent": "hsl(217.2, 32.6%, 17.5%)",
+      "accent-foreground": "hsl(210, 40%, 98%)",
+      "destructive": "hsl(0, 84.2%, 60.2%)",
+      "destructive-foreground": "hsl(210, 40%, 98%)",
+      "border": "hsl(217.2, 32.6%, 17.5%)",
+      "input": "hsl(217.2, 32.6%, 17.5%)",
+      "ring": "hsl(186, 70%, 50%)"
+    },
+    "borderRadius": {
+      "lg": "0.5rem",
+      "md": "0.3rem",
+      "sm": "0.15rem"
+    },
+    "backgroundImage": {
+      "grid-pattern": "linear-gradient(to right, #1e293b 1px, transparent 1px), linear-gradient(to bottom, #1e293b 1px, transparent 1px)"
+    }
+  },
+  "layout_strategies": {
+    "dashboard": {
+      "type": "Bento Grid",
+      "structure": "grid grid-cols-1 md:grid-cols-12 gap-6 p-6",
+      "card_style": "bg-card/50 backdrop-blur-sm border border-border/50 hover:border-primary/50 transition-colors duration-300"
+    },
+    "marketing": {
+      "type": "Hero Centered",
+      "features": "Asymmetric Feature Grid"
+    }
+  },
+  "components": {
+    "Button": {
+      "variant": "outline",
+      "radius": "none",
+      "animation": "hover:bg-primary/20 hover:text-primary hover:border-primary transition-all duration-300",
+      "special": "Cyber-glitch effect on click"
+    },
+    "Card": {
+      "style": "Glassmorphism",
+      "border": "1px solid rgba(255,255,255,0.05)",
+      "shadow": "0 0 0 1px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.5)"
+    },
+    "Charts": {
+      "library": "Recharts",
+      "theme": "Dark",
+      "grid": "stroke-dasharray='3 3' stroke='#334155'",
+      "tooltip": "bg-slate-900 border-slate-700 text-slate-50"
+    }
+  },
+  "visual_assets": {
+    "icons": "Lucide React (Shield, Activity, Lock, Server, Cpu, Globe, AlertTriangle)",
+    "background_effects": [
+      "Subtle animated grid background",
+      "Scanline overlay (opacity 0.02)",
+      "Radial gradient glow behind hero elements"
+    ]
+  },
+  "page_specific_guidelines": {
+    "Home": {
+      "hero": "Large typing text effect (CyberSentinelle initializing...), minimalist grid background",
+      "stats": "Rolling number counters for 'Packets Analyzed', 'Threats Blocked'"
+    },
+    "Dashboard": {
+      "layout": "Sidebar navigation (collapsible), Main content area with Bento grid",
+      "widgets": "Real-time traffic monitor (LineChart), Attack Origin (Map or List), Threat Level (Gauge)"
+    },
+    "Model": {
+      "focus": "Confusion Matrix heatmap (Red for False Negatives), ROC Curve",
+      "interactive": "Slider to adjust Probability Threshold"
+    },
+    "Prediction": {
+      "input": "Terminal-style input form or file upload drag-drop zone with scanning animation"
+    }
+  },
+  "motion": {
+    "initial": "opacity-0 translate-y-4",
+    "animate": "opacity-100 translate-y-0",
+    "transition": "duration-500 ease-out",
+    "hover": "scale-[1.01] shadow-lg shadow-primary/10"
+  },
+  "accessibility": {
+    "contrast": "Ensure neon text has sufficient contrast against dark bg (use 4.5:1 ratio)",
+    "focus": "Visible ring-2 ring-primary offset-2 offset-background"
+  },
+  "instructions_to_main_agent": [
+    "Install 'lucide-react', 'recharts', 'framer-motion', 'clsx', 'tailwind-merge' if not present.",
+    "Use 'JetBrains Mono' for all data values, code snippets, and terminal inputs.",
+    "Ensure the 'Download Notebook' button is prominent and labeled 'Télécharger le Notebook (FR)'.",
+    "Implement a 'Demo Mode' toggle that hides complex controls and focuses on visualizations.",
+    "Use 'sonner' for toast notifications (e.g., 'Model Training Complete', 'Intrusion Detected').",
+    "DO NOT use gradients for backgrounds. Use solid dark colors with subtle borders.",
+    "Add 'data-testid' to all interactive elements."
+  ],
+  "universal_guidelines": [
+    "Avoid 'AI slop' aesthetics (generic centered layouts, purple/blue gradients).",
+    "Use z-index hierarchy to create depth.",
+    "Micro-animations are mandatory for all interactions.",
+    "Spacing should be generous (p-6, p-8) even in dense dashboards."
+  ]
+}
