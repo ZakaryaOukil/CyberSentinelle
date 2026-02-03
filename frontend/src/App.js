@@ -723,19 +723,21 @@ const PredictionPage = () => {
   };
 
   const setDemoNormal = () => {
+    // These values are typical of legitimate HTTP traffic
     setFeatures({
-      duration: 12, protocol_type: 'tcp', service: 'http', flag: 'SF',
-      src_bytes: 520, dst_bytes: 8500, count: 3, srv_count: 3, serror_rate: 0.01,
-      same_srv_rate: 0.98, dst_host_count: 230, dst_host_srv_count: 220, logged_in: 1
+      duration: 8, protocol_type: 'tcp', service: 'http', flag: 'SF',
+      src_bytes: 320, dst_bytes: 12500, count: 2, srv_count: 2, serror_rate: 0.0,
+      same_srv_rate: 1, dst_host_count: 180, dst_host_srv_count: 175, logged_in: 1
     });
     setPrediction(null);
   };
 
   const setDemoAttack = () => {
+    // These values are typical of DoS SYN flood attack (high count, S0 flag, no response)
     setFeatures({
       duration: 0, protocol_type: 'tcp', service: 'private', flag: 'S0',
-      src_bytes: 0, dst_bytes: 0, count: 280, srv_count: 260, serror_rate: 0.88,
-      same_srv_rate: 1, dst_host_count: 255, dst_host_srv_count: 12, logged_in: 0, dst_host_serror_rate: 0.85
+      src_bytes: 0, dst_bytes: 0, count: 450, srv_count: 400, serror_rate: 0.95,
+      same_srv_rate: 1, dst_host_count: 255, dst_host_srv_count: 5, logged_in: 0
     });
     setPrediction(null);
   };
