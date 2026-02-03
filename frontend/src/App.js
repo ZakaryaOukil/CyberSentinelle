@@ -587,10 +587,10 @@ const ModelPage = () => {
         <>
           {/* Métriques */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard title="Accuracy (RF)" value={`${(rfMetrics?.accuracy * 100).toFixed(1)}%`} icon={CheckCircle} color="success" testId="m-acc" />
-            <StatCard title="Precision (RF)" value={`${(rfMetrics?.precision * 100).toFixed(1)}%`} icon={Target} color="primary" testId="m-prec" />
-            <StatCard title="Recall (RF)" value={`${(rfMetrics?.recall * 100).toFixed(1)}%`} icon={Zap} color="warning" testId="m-rec" />
-            <StatCard title="AUC (RF)" value={rfMetrics?.roc_data?.auc?.toFixed(3)} icon={TrendingUp} color="info" testId="m-auc" />
+            <StatCard title="Accuracy (RF)" value={`${(rfMetrics?.accuracy * 100).toFixed(2)}%`} icon={CheckCircle} color="success" testId="m-acc" />
+            <StatCard title="Precision (RF)" value={`${(rfMetrics?.precision * 100).toFixed(2)}%`} icon={Target} color="primary" testId="m-prec" />
+            <StatCard title="Recall (RF)" value={`${(rfMetrics?.recall * 100).toFixed(2)}%`} icon={Zap} color="warning" testId="m-rec" />
+            <StatCard title="AUC (RF)" value={rfMetrics?.roc_data?.auc?.toFixed(4)} icon={TrendingUp} color="info" testId="m-auc" />
           </div>
 
           {/* Comparaison */}
