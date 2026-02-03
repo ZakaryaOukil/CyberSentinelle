@@ -130,86 +130,110 @@ def load_nsl_kdd_data():
     else:
         # Generate synthetic NSL-KDD-like data for demonstration
         np.random.seed(42)
-        n_samples = 5000
+        n_normal = 2500
+        n_attack = 2500
         
-        # Create synthetic data mimicking NSL-KDD structure
-        data = {
-            'duration': np.random.exponential(scale=100, size=n_samples).astype(int),
-            'protocol_type': np.random.choice(['tcp', 'udp', 'icmp'], n_samples, p=[0.8, 0.15, 0.05]),
-            'service': np.random.choice(['http', 'ftp', 'smtp', 'ssh', 'dns', 'telnet', 'private'], n_samples),
-            'flag': np.random.choice(['SF', 'S0', 'REJ', 'RSTR', 'SH', 'RSTO', 'S1', 'RSTOS0', 'S3', 'S2', 'OTH'], n_samples),
-            'src_bytes': np.random.exponential(scale=500, size=n_samples).astype(int),
-            'dst_bytes': np.random.exponential(scale=1000, size=n_samples).astype(int),
-            'land': np.random.choice([0, 1], n_samples, p=[0.99, 0.01]),
-            'wrong_fragment': np.random.choice([0, 1, 2, 3], n_samples, p=[0.95, 0.03, 0.01, 0.01]),
-            'urgent': np.random.choice([0, 1], n_samples, p=[0.99, 0.01]),
-            'hot': np.random.poisson(lam=0.5, size=n_samples),
-            'num_failed_logins': np.random.choice([0, 1, 2], n_samples, p=[0.95, 0.04, 0.01]),
-            'logged_in': np.random.choice([0, 1], n_samples, p=[0.4, 0.6]),
-            'num_compromised': np.random.poisson(lam=0.1, size=n_samples),
-            'root_shell': np.random.choice([0, 1], n_samples, p=[0.98, 0.02]),
-            'su_attempted': np.random.choice([0, 1], n_samples, p=[0.99, 0.01]),
-            'num_root': np.random.poisson(lam=0.05, size=n_samples),
-            'num_file_creations': np.random.poisson(lam=0.1, size=n_samples),
-            'num_shells': np.random.poisson(lam=0.02, size=n_samples),
-            'num_access_files': np.random.poisson(lam=0.05, size=n_samples),
-            'num_outbound_cmds': np.zeros(n_samples, dtype=int),
-            'is_host_login': np.random.choice([0, 1], n_samples, p=[0.99, 0.01]),
-            'is_guest_login': np.random.choice([0, 1], n_samples, p=[0.98, 0.02]),
-            'count': np.random.poisson(lam=50, size=n_samples),
-            'srv_count': np.random.poisson(lam=30, size=n_samples),
-            'serror_rate': np.random.uniform(0, 1, n_samples),
-            'srv_serror_rate': np.random.uniform(0, 1, n_samples),
-            'rerror_rate': np.random.uniform(0, 0.5, n_samples),
-            'srv_rerror_rate': np.random.uniform(0, 0.5, n_samples),
-            'same_srv_rate': np.random.uniform(0, 1, n_samples),
-            'diff_srv_rate': np.random.uniform(0, 0.5, n_samples),
-            'srv_diff_host_rate': np.random.uniform(0, 0.5, n_samples),
-            'dst_host_count': np.random.randint(0, 256, n_samples),
-            'dst_host_srv_count': np.random.randint(0, 256, n_samples),
-            'dst_host_same_srv_rate': np.random.uniform(0, 1, n_samples),
-            'dst_host_diff_srv_rate': np.random.uniform(0, 0.5, n_samples),
-            'dst_host_same_src_port_rate': np.random.uniform(0, 1, n_samples),
-            'dst_host_srv_diff_host_rate': np.random.uniform(0, 0.5, n_samples),
-            'dst_host_serror_rate': np.random.uniform(0, 0.5, n_samples),
-            'dst_host_srv_serror_rate': np.random.uniform(0, 0.5, n_samples),
-            'dst_host_rerror_rate': np.random.uniform(0, 0.3, n_samples),
-            'dst_host_srv_rerror_rate': np.random.uniform(0, 0.3, n_samples),
-            'difficulty_level': np.random.randint(1, 22, n_samples)
+        # === NORMAL TRAFFIC DATA ===
+        normal_data = {
+            'duration': np.random.exponential(scale=50, size=n_normal).astype(int),
+            'protocol_type': np.random.choice(['tcp', 'udp', 'icmp'], n_normal, p=[0.85, 0.10, 0.05]),
+            'service': np.random.choice(['http', 'ftp', 'smtp', 'ssh', 'dns'], n_normal, p=[0.5, 0.2, 0.15, 0.1, 0.05]),
+            'flag': np.random.choice(['SF', 'S1', 'S2'], n_normal, p=[0.9, 0.07, 0.03]),  # SF = normal completion
+            'src_bytes': np.random.randint(100, 2000, n_normal),
+            'dst_bytes': np.random.randint(1000, 50000, n_normal),
+            'land': np.zeros(n_normal, dtype=int),
+            'wrong_fragment': np.zeros(n_normal, dtype=int),
+            'urgent': np.zeros(n_normal, dtype=int),
+            'hot': np.zeros(n_normal, dtype=int),
+            'num_failed_logins': np.zeros(n_normal, dtype=int),
+            'logged_in': np.ones(n_normal, dtype=int),  # Normal traffic is logged in
+            'num_compromised': np.zeros(n_normal, dtype=int),
+            'root_shell': np.zeros(n_normal, dtype=int),
+            'su_attempted': np.zeros(n_normal, dtype=int),
+            'num_root': np.zeros(n_normal, dtype=int),
+            'num_file_creations': np.zeros(n_normal, dtype=int),
+            'num_shells': np.zeros(n_normal, dtype=int),
+            'num_access_files': np.zeros(n_normal, dtype=int),
+            'num_outbound_cmds': np.zeros(n_normal, dtype=int),
+            'is_host_login': np.zeros(n_normal, dtype=int),
+            'is_guest_login': np.zeros(n_normal, dtype=int),
+            'count': np.random.randint(1, 10, n_normal),  # Low count for normal
+            'srv_count': np.random.randint(1, 10, n_normal),
+            'serror_rate': np.random.uniform(0, 0.1, n_normal),  # Very low error rate
+            'srv_serror_rate': np.random.uniform(0, 0.1, n_normal),
+            'rerror_rate': np.random.uniform(0, 0.1, n_normal),
+            'srv_rerror_rate': np.random.uniform(0, 0.1, n_normal),
+            'same_srv_rate': np.random.uniform(0.8, 1.0, n_normal),  # High same service
+            'diff_srv_rate': np.random.uniform(0, 0.2, n_normal),
+            'srv_diff_host_rate': np.random.uniform(0, 0.2, n_normal),
+            'dst_host_count': np.random.randint(200, 256, n_normal),  # High host count
+            'dst_host_srv_count': np.random.randint(200, 256, n_normal),  # High srv count
+            'dst_host_same_srv_rate': np.random.uniform(0.8, 1.0, n_normal),
+            'dst_host_diff_srv_rate': np.random.uniform(0, 0.2, n_normal),
+            'dst_host_same_src_port_rate': np.random.uniform(0, 0.3, n_normal),
+            'dst_host_srv_diff_host_rate': np.random.uniform(0, 0.2, n_normal),
+            'dst_host_serror_rate': np.random.uniform(0, 0.1, n_normal),  # Low error
+            'dst_host_srv_serror_rate': np.random.uniform(0, 0.1, n_normal),
+            'dst_host_rerror_rate': np.random.uniform(0, 0.1, n_normal),
+            'dst_host_srv_rerror_rate': np.random.uniform(0, 0.1, n_normal),
+            'difficulty_level': np.random.randint(1, 10, n_normal),
+            'label': ['normal'] * n_normal
         }
         
-        # Generate labels with realistic distribution
-        labels = []
-        for i in range(n_samples):
-            rand = np.random.random()
-            if rand < 0.5:
-                labels.append('normal')
-            elif rand < 0.75:
-                labels.append(np.random.choice(DOS_ATTACKS[:6]))
-            elif rand < 0.85:
-                labels.append(np.random.choice(PROBE_ATTACKS[:4]))
-            elif rand < 0.95:
-                labels.append(np.random.choice(R2L_ATTACKS[:5]))
-            else:
-                labels.append(np.random.choice(U2R_ATTACKS[:4]))
+        # === ATTACK TRAFFIC DATA ===
+        attack_data = {
+            'duration': np.zeros(n_attack, dtype=int),  # DoS attacks are quick
+            'protocol_type': np.random.choice(['tcp', 'udp', 'icmp'], n_attack, p=[0.7, 0.1, 0.2]),
+            'service': np.random.choice(['private', 'http', 'ftp_data', 'telnet', 'smtp'], n_attack, p=[0.5, 0.2, 0.15, 0.1, 0.05]),
+            'flag': np.random.choice(['S0', 'REJ', 'RSTR', 'RSTO'], n_attack, p=[0.5, 0.25, 0.15, 0.1]),  # Failed connections
+            'src_bytes': np.random.randint(0, 100, n_attack),  # Low or zero bytes
+            'dst_bytes': np.zeros(n_attack, dtype=int),  # No response
+            'land': np.random.choice([0, 1], n_attack, p=[0.95, 0.05]),
+            'wrong_fragment': np.random.choice([0, 1, 2, 3], n_attack, p=[0.8, 0.1, 0.05, 0.05]),
+            'urgent': np.random.choice([0, 1], n_attack, p=[0.95, 0.05]),
+            'hot': np.random.poisson(lam=2, size=n_attack),
+            'num_failed_logins': np.random.choice([0, 1, 2, 3], n_attack, p=[0.7, 0.15, 0.1, 0.05]),
+            'logged_in': np.zeros(n_attack, dtype=int),  # Not logged in
+            'num_compromised': np.random.poisson(lam=1, size=n_attack),
+            'root_shell': np.random.choice([0, 1], n_attack, p=[0.9, 0.1]),
+            'su_attempted': np.random.choice([0, 1], n_attack, p=[0.95, 0.05]),
+            'num_root': np.random.poisson(lam=0.5, size=n_attack),
+            'num_file_creations': np.random.poisson(lam=0.5, size=n_attack),
+            'num_shells': np.random.poisson(lam=0.3, size=n_attack),
+            'num_access_files': np.random.poisson(lam=0.3, size=n_attack),
+            'num_outbound_cmds': np.zeros(n_attack, dtype=int),
+            'is_host_login': np.zeros(n_attack, dtype=int),
+            'is_guest_login': np.random.choice([0, 1], n_attack, p=[0.9, 0.1]),
+            'count': np.random.randint(100, 512, n_attack),  # HIGH count - key DoS indicator
+            'srv_count': np.random.randint(100, 512, n_attack),  # HIGH srv_count
+            'serror_rate': np.random.uniform(0.7, 1.0, n_attack),  # HIGH error rate - key indicator
+            'srv_serror_rate': np.random.uniform(0.7, 1.0, n_attack),
+            'rerror_rate': np.random.uniform(0.3, 0.8, n_attack),
+            'srv_rerror_rate': np.random.uniform(0.3, 0.8, n_attack),
+            'same_srv_rate': np.random.uniform(0.8, 1.0, n_attack),  # All same service (flood)
+            'diff_srv_rate': np.random.uniform(0, 0.2, n_attack),
+            'srv_diff_host_rate': np.random.uniform(0, 0.3, n_attack),
+            'dst_host_count': np.random.randint(200, 256, n_attack),
+            'dst_host_srv_count': np.random.randint(1, 50, n_attack),  # LOW - many hosts, few services
+            'dst_host_same_srv_rate': np.random.uniform(0.8, 1.0, n_attack),
+            'dst_host_diff_srv_rate': np.random.uniform(0, 0.2, n_attack),
+            'dst_host_same_src_port_rate': np.random.uniform(0.5, 1.0, n_attack),
+            'dst_host_srv_diff_host_rate': np.random.uniform(0, 0.5, n_attack),
+            'dst_host_serror_rate': np.random.uniform(0.5, 1.0, n_attack),  # HIGH error
+            'dst_host_srv_serror_rate': np.random.uniform(0.5, 1.0, n_attack),
+            'dst_host_rerror_rate': np.random.uniform(0.2, 0.6, n_attack),
+            'dst_host_srv_rerror_rate': np.random.uniform(0.2, 0.6, n_attack),
+            'difficulty_level': np.random.randint(10, 22, n_attack),
+            'label': np.random.choice(DOS_ATTACKS[:6], n_attack)  # All are DoS attacks
+        }
         
-        data['label'] = labels
+        # Combine normal and attack data
+        df_normal = pd.DataFrame(normal_data)
+        df_attack = pd.DataFrame(attack_data)
+        df_train = pd.concat([df_normal, df_attack], ignore_index=True)
         
-        # Adjust features based on attack type for more realistic patterns
-        df = pd.DataFrame(data)
-        
-        # DoS attacks: high src_bytes, count
-        dos_mask = df['label'].isin(DOS_ATTACKS)
-        df.loc[dos_mask, 'src_bytes'] = df.loc[dos_mask, 'src_bytes'] * 10
-        df.loc[dos_mask, 'count'] = df.loc[dos_mask, 'count'] * 5
-        df.loc[dos_mask, 'serror_rate'] = np.random.uniform(0.7, 1.0, dos_mask.sum())
-        
-        # Probe attacks: high dst_host_count
-        probe_mask = df['label'].isin(PROBE_ATTACKS)
-        df.loc[probe_mask, 'dst_host_count'] = np.random.randint(200, 256, probe_mask.sum())
-        df.loc[probe_mask, 'dst_host_srv_count'] = np.random.randint(1, 10, probe_mask.sum())
-        
-        df_train = df
+        # Shuffle the data
+        df_train = df_train.sample(frac=1, random_state=42).reset_index(drop=True)
         df_test = None
     
     return df_train, df_test
