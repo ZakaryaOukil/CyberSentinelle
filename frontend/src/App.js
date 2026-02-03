@@ -348,10 +348,13 @@ const DashboardPage = () => {
     fetchEDA();
   }, []);
 
-  // Préparer les données pour le graphique des features (corrigé)
+  // Préparer les données pour le graphique des features (corrigé - utiliser log scale)
   const topFeaturesData = edaData?.top_features?.slice(0, 10).map(f => ({
     name: f.feature.length > 12 ? f.feature.substring(0, 12) + '...' : f.feature,
-    variance: parseFloat(f.variance.toFixed(2))
+    fullName: f.feature,
+    variance: f.variance,
+    // Utiliser échelle logarithmique pour meilleure visualisation
+    logVariance: f.variance > 0 ? Math.log10(f.variance) : 0
   })) || [];
 
   const labelDistribution = edaData?.feature_distributions?.label 
