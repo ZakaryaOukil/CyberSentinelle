@@ -432,34 +432,40 @@ const DashboardPage = () => {
           </CardContent>
         </Card>
 
-        {/* Top Features - CORRIGÉ */}
+        {/* Top Features - avec échelle log */}
         <Card className="cyber-card">
           <CardHeader>
             <CardTitle className="font-mono">Top Features (par variance)</CardTitle>
+            <CardDescription>Échelle logarithmique pour meilleure visualisation</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-56">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={topFeaturesData} margin={{ bottom: 60 }}>
+                <BarChart data={topFeaturesData} margin={{ bottom: 70 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                   <XAxis 
                     dataKey="name" 
                     stroke="#94a3b8" 
                     angle={-45} 
                     textAnchor="end" 
-                    height={60} 
-                    fontSize={10}
+                    height={70} 
+                    fontSize={9}
                     interval={0}
                   />
                   <YAxis 
-                    stroke="#94a3b8" 
-                    tickFormatter={(v) => v >= 1000 ? `${(v/1000).toFixed(0)}k` : v.toFixed(0)}
+                    stroke="#94a3b8"
+                    domain={[0, 'auto']}
+                    tickFormatter={(v) => `10^${v.toFixed(0)}`}
                   />
                   <Tooltip 
                     contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }}
-                    formatter={(value) => [value.toLocaleString(), 'Variance']}
+                    formatter={(value, name, props) => {
+                      const realVariance = props.payload.variance;
+                      return [realVariance >= 1000000 ? `${(realVariance/1000000).toFixed(1)}M` : realVariance >= 1000 ? `${(realVariance/1000).toFixed(1)}K` : realVariance.toFixed(1), 'Variance'];
+                    }}
+                    labelFormatter={(label, payload) => payload[0]?.payload?.fullName || label}
                   />
-                  <Bar dataKey="variance" fill={COLORS.success} radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="logVariance" fill={COLORS.success} radius={[4, 4, 0, 0]} name="Variance (log)" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
