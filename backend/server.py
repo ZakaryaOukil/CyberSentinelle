@@ -128,113 +128,100 @@ def load_nsl_kdd_data():
         df_train = pd.read_csv(train_path, names=NSL_KDD_COLUMNS)
         df_test = pd.read_csv(test_path, names=NSL_KDD_COLUMNS) if test_path.exists() else None
     else:
-        # Generate REALISTIC synthetic NSL-KDD-like data
-        # With overlapping patterns to achieve ~92-96% accuracy (realistic)
+        # Generate REALISTIC synthetic data with significant overlap
+        # Target: ~92-96% accuracy (realistic for IDS)
         np.random.seed(42)
-        n_normal = 2500
-        n_attack = 2500
+        n_samples = 5000
         
-        # === NORMAL TRAFFIC DATA (with some noise/ambiguity) ===
-        normal_data = {
-            'duration': np.random.exponential(scale=80, size=n_normal).astype(int),
-            'protocol_type': np.random.choice(['tcp', 'udp', 'icmp'], n_normal, p=[0.78, 0.12, 0.10]),
-            'service': np.random.choice(['http', 'ftp', 'smtp', 'ssh', 'dns', 'private', 'telnet'], n_normal, p=[0.4, 0.15, 0.12, 0.1, 0.08, 0.10, 0.05]),
-            'flag': np.random.choice(['SF', 'S0', 'S1', 'REJ', 'RSTR'], n_normal, p=[0.75, 0.10, 0.08, 0.04, 0.03]),
-            'src_bytes': np.random.exponential(scale=800, size=n_normal).astype(int),
-            'dst_bytes': np.random.exponential(scale=5000, size=n_normal).astype(int),
-            'land': np.random.choice([0, 1], n_normal, p=[0.995, 0.005]),
-            'wrong_fragment': np.random.choice([0, 1, 2], n_normal, p=[0.96, 0.03, 0.01]),
-            'urgent': np.random.choice([0, 1], n_normal, p=[0.99, 0.01]),
-            'hot': np.random.poisson(lam=0.3, size=n_normal),
-            'num_failed_logins': np.random.choice([0, 1, 2], n_normal, p=[0.92, 0.06, 0.02]),
-            'logged_in': np.random.choice([0, 1], n_normal, p=[0.25, 0.75]),
-            'num_compromised': np.random.poisson(lam=0.1, size=n_normal),
-            'root_shell': np.random.choice([0, 1], n_normal, p=[0.98, 0.02]),
-            'su_attempted': np.random.choice([0, 1], n_normal, p=[0.995, 0.005]),
-            'num_root': np.random.poisson(lam=0.05, size=n_normal),
-            'num_file_creations': np.random.poisson(lam=0.1, size=n_normal),
-            'num_shells': np.random.poisson(lam=0.02, size=n_normal),
-            'num_access_files': np.random.poisson(lam=0.05, size=n_normal),
-            'num_outbound_cmds': np.zeros(n_normal, dtype=int),
-            'is_host_login': np.random.choice([0, 1], n_normal, p=[0.99, 0.01]),
-            'is_guest_login': np.random.choice([0, 1], n_normal, p=[0.97, 0.03]),
-            'count': np.random.exponential(scale=15, size=n_normal).astype(int) + 1,
-            'srv_count': np.random.exponential(scale=12, size=n_normal).astype(int) + 1,
-            'serror_rate': np.random.beta(1, 8, n_normal),  # Skewed toward 0 but with some higher values
-            'srv_serror_rate': np.random.beta(1, 8, n_normal),
-            'rerror_rate': np.random.beta(1, 10, n_normal),
-            'srv_rerror_rate': np.random.beta(1, 10, n_normal),
-            'same_srv_rate': np.random.beta(8, 2, n_normal),  # Skewed toward 1
-            'diff_srv_rate': np.random.beta(1, 8, n_normal),
-            'srv_diff_host_rate': np.random.beta(1, 6, n_normal),
-            'dst_host_count': np.random.randint(50, 256, n_normal),
-            'dst_host_srv_count': np.random.randint(50, 256, n_normal),
-            'dst_host_same_srv_rate': np.random.beta(6, 2, n_normal),
-            'dst_host_diff_srv_rate': np.random.beta(1, 6, n_normal),
-            'dst_host_same_src_port_rate': np.random.beta(2, 4, n_normal),
-            'dst_host_srv_diff_host_rate': np.random.beta(1, 5, n_normal),
-            'dst_host_serror_rate': np.random.beta(1, 10, n_normal),
-            'dst_host_srv_serror_rate': np.random.beta(1, 10, n_normal),
-            'dst_host_rerror_rate': np.random.beta(1, 12, n_normal),
-            'dst_host_srv_rerror_rate': np.random.beta(1, 12, n_normal),
-            'difficulty_level': np.random.randint(1, 15, n_normal),
-            'label': ['normal'] * n_normal
+        # Create base data with shared distributions
+        data = {
+            'duration': np.random.exponential(scale=50, size=n_samples).astype(int),
+            'protocol_type': np.random.choice(['tcp', 'udp', 'icmp'], n_samples, p=[0.76, 0.14, 0.10]),
+            'service': np.random.choice(['http', 'private', 'ftp', 'smtp', 'ssh', 'dns', 'telnet', 'ftp_data'], n_samples, p=[0.30, 0.20, 0.12, 0.10, 0.08, 0.08, 0.07, 0.05]),
+            'flag': np.random.choice(['SF', 'S0', 'REJ', 'RSTR', 'S1', 'RSTO', 'SH'], n_samples, p=[0.55, 0.18, 0.10, 0.07, 0.05, 0.03, 0.02]),
+            'src_bytes': np.random.exponential(scale=500, size=n_samples).astype(int),
+            'dst_bytes': np.random.exponential(scale=2000, size=n_samples).astype(int),
+            'land': np.random.choice([0, 1], n_samples, p=[0.997, 0.003]),
+            'wrong_fragment': np.random.choice([0, 1, 2, 3], n_samples, p=[0.92, 0.05, 0.02, 0.01]),
+            'urgent': np.random.choice([0, 1], n_samples, p=[0.995, 0.005]),
+            'hot': np.random.poisson(lam=0.5, size=n_samples),
+            'num_failed_logins': np.random.choice([0, 1, 2, 3], n_samples, p=[0.88, 0.08, 0.03, 0.01]),
+            'logged_in': np.random.choice([0, 1], n_samples, p=[0.45, 0.55]),
+            'num_compromised': np.random.poisson(lam=0.2, size=n_samples),
+            'root_shell': np.random.choice([0, 1], n_samples, p=[0.96, 0.04]),
+            'su_attempted': np.random.choice([0, 1], n_samples, p=[0.98, 0.02]),
+            'num_root': np.random.poisson(lam=0.1, size=n_samples),
+            'num_file_creations': np.random.poisson(lam=0.15, size=n_samples),
+            'num_shells': np.random.poisson(lam=0.05, size=n_samples),
+            'num_access_files': np.random.poisson(lam=0.08, size=n_samples),
+            'num_outbound_cmds': np.zeros(n_samples, dtype=int),
+            'is_host_login': np.random.choice([0, 1], n_samples, p=[0.995, 0.005]),
+            'is_guest_login': np.random.choice([0, 1], n_samples, p=[0.95, 0.05]),
+            'count': np.random.exponential(scale=40, size=n_samples).astype(int) + 1,
+            'srv_count': np.random.exponential(scale=35, size=n_samples).astype(int) + 1,
+            'serror_rate': np.random.beta(2, 5, n_samples),
+            'srv_serror_rate': np.random.beta(2, 5, n_samples),
+            'rerror_rate': np.random.beta(1.5, 6, n_samples),
+            'srv_rerror_rate': np.random.beta(1.5, 6, n_samples),
+            'same_srv_rate': np.random.beta(5, 2, n_samples),
+            'diff_srv_rate': np.random.beta(1.5, 5, n_samples),
+            'srv_diff_host_rate': np.random.beta(1.5, 5, n_samples),
+            'dst_host_count': np.random.randint(30, 256, n_samples),
+            'dst_host_srv_count': np.random.randint(20, 200, n_samples),
+            'dst_host_same_srv_rate': np.random.beta(4, 2, n_samples),
+            'dst_host_diff_srv_rate': np.random.beta(1.5, 5, n_samples),
+            'dst_host_same_src_port_rate': np.random.beta(2, 3, n_samples),
+            'dst_host_srv_diff_host_rate': np.random.beta(1.5, 4, n_samples),
+            'dst_host_serror_rate': np.random.beta(2, 5, n_samples),
+            'dst_host_srv_serror_rate': np.random.beta(2, 5, n_samples),
+            'dst_host_rerror_rate': np.random.beta(1.5, 6, n_samples),
+            'dst_host_srv_rerror_rate': np.random.beta(1.5, 6, n_samples),
+            'difficulty_level': np.random.randint(1, 22, n_samples)
         }
         
-        # === ATTACK TRAFFIC DATA (with realistic overlap) ===
-        attack_data = {
-            'duration': np.random.exponential(scale=20, size=n_attack).astype(int),
-            'protocol_type': np.random.choice(['tcp', 'udp', 'icmp'], n_attack, p=[0.72, 0.13, 0.15]),
-            'service': np.random.choice(['private', 'http', 'ftp_data', 'telnet', 'smtp', 'ftp', 'dns'], n_attack, p=[0.35, 0.20, 0.15, 0.12, 0.08, 0.06, 0.04]),
-            'flag': np.random.choice(['S0', 'REJ', 'RSTR', 'SF', 'RSTO', 'SH'], n_attack, p=[0.35, 0.25, 0.15, 0.12, 0.08, 0.05]),
-            'src_bytes': np.random.exponential(scale=200, size=n_attack).astype(int),
-            'dst_bytes': np.random.exponential(scale=500, size=n_attack).astype(int),
-            'land': np.random.choice([0, 1], n_attack, p=[0.96, 0.04]),
-            'wrong_fragment': np.random.choice([0, 1, 2, 3], n_attack, p=[0.85, 0.08, 0.04, 0.03]),
-            'urgent': np.random.choice([0, 1], n_attack, p=[0.96, 0.04]),
-            'hot': np.random.poisson(lam=1.5, size=n_attack),
-            'num_failed_logins': np.random.choice([0, 1, 2, 3], n_attack, p=[0.75, 0.13, 0.08, 0.04]),
-            'logged_in': np.random.choice([0, 1], n_attack, p=[0.70, 0.30]),
-            'num_compromised': np.random.poisson(lam=0.8, size=n_attack),
-            'root_shell': np.random.choice([0, 1], n_attack, p=[0.92, 0.08]),
-            'su_attempted': np.random.choice([0, 1], n_attack, p=[0.96, 0.04]),
-            'num_root': np.random.poisson(lam=0.4, size=n_attack),
-            'num_file_creations': np.random.poisson(lam=0.4, size=n_attack),
-            'num_shells': np.random.poisson(lam=0.25, size=n_attack),
-            'num_access_files': np.random.poisson(lam=0.25, size=n_attack),
-            'num_outbound_cmds': np.zeros(n_attack, dtype=int),
-            'is_host_login': np.random.choice([0, 1], n_attack, p=[0.98, 0.02]),
-            'is_guest_login': np.random.choice([0, 1], n_attack, p=[0.92, 0.08]),
-            'count': np.random.exponential(scale=120, size=n_attack).astype(int) + 10,
-            'srv_count': np.random.exponential(scale=100, size=n_attack).astype(int) + 10,
-            'serror_rate': np.random.beta(5, 3, n_attack),  # Higher error rates
-            'srv_serror_rate': np.random.beta(5, 3, n_attack),
-            'rerror_rate': np.random.beta(3, 4, n_attack),
-            'srv_rerror_rate': np.random.beta(3, 4, n_attack),
-            'same_srv_rate': np.random.beta(7, 2, n_attack),
-            'diff_srv_rate': np.random.beta(1, 6, n_attack),
-            'srv_diff_host_rate': np.random.beta(2, 5, n_attack),
-            'dst_host_count': np.random.randint(100, 256, n_attack),
-            'dst_host_srv_count': np.random.randint(1, 100, n_attack),
-            'dst_host_same_srv_rate': np.random.beta(6, 3, n_attack),
-            'dst_host_diff_srv_rate': np.random.beta(1, 5, n_attack),
-            'dst_host_same_src_port_rate': np.random.beta(4, 3, n_attack),
-            'dst_host_srv_diff_host_rate': np.random.beta(2, 4, n_attack),
-            'dst_host_serror_rate': np.random.beta(4, 4, n_attack),
-            'dst_host_srv_serror_rate': np.random.beta(4, 4, n_attack),
-            'dst_host_rerror_rate': np.random.beta(2, 5, n_attack),
-            'dst_host_srv_rerror_rate': np.random.beta(2, 5, n_attack),
-            'difficulty_level': np.random.randint(8, 22, n_attack),
-            'label': np.random.choice(DOS_ATTACKS[:6], n_attack)
-        }
+        df = pd.DataFrame(data)
         
-        # Combine normal and attack data
-        df_normal = pd.DataFrame(normal_data)
-        df_attack = pd.DataFrame(attack_data)
-        df_train = pd.concat([df_normal, df_attack], ignore_index=True)
+        # Assign labels - 50% normal, 50% attack
+        labels = ['normal'] * (n_samples // 2) + list(np.random.choice(DOS_ATTACKS[:6], n_samples // 2))
+        np.random.shuffle(labels)
+        df['label'] = labels
         
-        # Shuffle the data
-        df_train = df_train.sample(frac=1, random_state=42).reset_index(drop=True)
+        # Now modify features based on label to create learnable (but not perfect) patterns
+        attack_mask = df['label'] != 'normal'
+        normal_mask = ~attack_mask
+        
+        # Attacks tend to have: higher count, higher serror_rate, lower dst_bytes, more S0/REJ flags
+        # But with significant overlap (not perfect separation)
+        
+        # Modify count - attacks have higher values on average but with overlap
+        df.loc[attack_mask, 'count'] = (df.loc[attack_mask, 'count'] * np.random.uniform(1.5, 4, attack_mask.sum())).astype(int)
+        df.loc[normal_mask, 'count'] = (df.loc[normal_mask, 'count'] * np.random.uniform(0.3, 1.5, normal_mask.sum())).astype(int) + 1
+        
+        # Modify srv_count similarly
+        df.loc[attack_mask, 'srv_count'] = (df.loc[attack_mask, 'srv_count'] * np.random.uniform(1.3, 3, attack_mask.sum())).astype(int)
+        df.loc[normal_mask, 'srv_count'] = (df.loc[normal_mask, 'srv_count'] * np.random.uniform(0.4, 1.4, normal_mask.sum())).astype(int) + 1
+        
+        # Modify serror_rate - attacks tend to have higher but with overlap
+        df.loc[attack_mask, 'serror_rate'] = np.clip(df.loc[attack_mask, 'serror_rate'] + np.random.uniform(0.1, 0.5, attack_mask.sum()), 0, 1)
+        df.loc[normal_mask, 'serror_rate'] = np.clip(df.loc[normal_mask, 'serror_rate'] * np.random.uniform(0.2, 1.2, normal_mask.sum()), 0, 1)
+        
+        # Similar for srv_serror_rate
+        df.loc[attack_mask, 'srv_serror_rate'] = np.clip(df.loc[attack_mask, 'srv_serror_rate'] + np.random.uniform(0.1, 0.45, attack_mask.sum()), 0, 1)
+        df.loc[normal_mask, 'srv_serror_rate'] = np.clip(df.loc[normal_mask, 'srv_serror_rate'] * np.random.uniform(0.2, 1.1, normal_mask.sum()), 0, 1)
+        
+        # Modify dst_bytes - normal traffic tends to have more response data
+        df.loc[normal_mask, 'dst_bytes'] = (df.loc[normal_mask, 'dst_bytes'] * np.random.uniform(1.2, 3, normal_mask.sum())).astype(int)
+        df.loc[attack_mask, 'dst_bytes'] = (df.loc[attack_mask, 'dst_bytes'] * np.random.uniform(0.1, 1.0, attack_mask.sum())).astype(int)
+        
+        # Modify logged_in - normal more likely to be logged in
+        df.loc[normal_mask, 'logged_in'] = np.random.choice([0, 1], normal_mask.sum(), p=[0.20, 0.80])
+        df.loc[attack_mask, 'logged_in'] = np.random.choice([0, 1], attack_mask.sum(), p=[0.65, 0.35])
+        
+        # dst_host_serror_rate - attacks tend higher
+        df.loc[attack_mask, 'dst_host_serror_rate'] = np.clip(df.loc[attack_mask, 'dst_host_serror_rate'] + np.random.uniform(0.05, 0.35, attack_mask.sum()), 0, 1)
+        
+        # Shuffle the dataframe
+        df_train = df.sample(frac=1, random_state=42).reset_index(drop=True)
         df_test = None
     
     return df_train, df_test
