@@ -2,9 +2,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import { BrowserRouter, Routes, Route, NavLink, useLocation } from "react-router-dom";
 import axios from "axios";
 import {
-  Shield, Activity, Database, Brain, Target, Download, Menu,
+  Shield, Activity, Database, Brain, Target, Download, Menu, X,
   AlertTriangle, CheckCircle, Server, Cpu, Globe, Lock, Zap,
-  BarChart3, PieChart, TrendingUp, FileText, Play
+  BarChart3, PieChart, TrendingUp, FileText, Play, Maximize2
 } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./components/ui/card";
@@ -36,7 +36,55 @@ const COLORS = {
 
 const CHART_COLORS = ["#06b6d4", "#10b981", "#ef4444", "#f59e0b", "#8b5cf6", "#3b82f6", "#ec4899"];
 
-// Sidebar - Sans page Télécharger
+// Modal pour agrandir les graphiques
+const ChartModal = ({ isOpen, onClose, title, children }) => {
+  if (!isOpen) return null;
+  
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80" onClick={onClose}>
+      <div className="bg-card border border-border rounded-xl w-full max-w-5xl max-h-[90vh] overflow-auto" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <h3 className="text-lg font-bold font-mono">{title}</h3>
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <X className="w-5 h-5" />
+          </Button>
+        </div>
+        <div className="p-6">
+          <div className="h-[500px]">
+            {children}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Wrapper pour rendre les graphiques cliquables
+const ClickableChart = ({ title, children, chartContent }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  return (
+    <>
+      <div 
+        className="cursor-pointer relative group" 
+        onClick={() => setIsModalOpen(true)}
+        title="Cliquer pour agrandir"
+      >
+        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+          <div className="bg-primary/20 p-1.5 rounded">
+            <Maximize2 className="w-4 h-4 text-primary" />
+          </div>
+        </div>
+        {children}
+      </div>
+      <ChartModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={title}>
+        {chartContent}
+      </ChartModal>
+    </>
+  );
+};
+
+// Sidebar
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
   
@@ -137,7 +185,7 @@ const StatCard = ({ title, value, icon: Icon, color = "primary", testId }) => (
   </Card>
 );
 
-// Page d'accueil avec bouton télécharger
+// Page d'accueil
 const HomePage = () => {
   const [stats, setStats] = useState(null);
   const [modelMetrics, setModelMetrics] = useState(null);
@@ -186,6 +234,30 @@ const HomePage = () => {
     ? Object.entries(stats.attack_categories).map(([name, value]) => ({ name, value }))
     : [];
 
+  // Chart content pour le modal
+  const pieChartContent = (
+    <ResponsiveContainer width="100%" height="100%">
+      <RechartsPie>
+        <Pie
+          data={attackData}
+          cx="50%"
+          cy="50%"
+          innerRadius={80}
+          outerRadius={160}
+          paddingAngle={2}
+          dataKey="value"
+          label={({ name, value, percent }) => `${name}: ${value} (${(percent * 100).toFixed(1)}%)`}
+        >
+          {attackData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+        <Legend />
+      </RechartsPie>
+    </ResponsiveContainer>
+  );
+
   return (
     <div className="space-y-8 fade-in" data-testid="home-page">
       {/* Hero */}
@@ -224,7 +296,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Stats - Données dynamiques */}
+      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard 
           title="Échantillons" 
@@ -249,7 +321,7 @@ const HomePage = () => {
         />
         <StatCard 
           title="Accuracy (RF)" 
-          value={rfAccuracy ? `${(rfAccuracy * 100).toFixed(1)}%` : "-"} 
+          value={rfAccuracy ? `${(rfAccuracy * 100).toFixed(2)}%` : "-"} 
           icon={CheckCircle} 
           color="success"
           testId="stat-accuracy"
@@ -261,30 +333,32 @@ const HomePage = () => {
         <Card className="cyber-card">
           <CardHeader>
             <CardTitle className="font-mono text-lg">Distribution des classes</CardTitle>
-            <CardDescription>Normal vs Attaques dans le dataset</CardDescription>
+            <CardDescription>Normal vs Attaques dans le dataset (cliquer pour agrandir)</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <RechartsPie>
-                  <Pie
-                    data={attackData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={50}
-                    outerRadius={90}
-                    paddingAngle={2}
-                    dataKey="value"
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {attackData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
-                </RechartsPie>
-              </ResponsiveContainer>
-            </div>
+            <ClickableChart title="Distribution des classes" chartContent={pieChartContent}>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <RechartsPie>
+                    <Pie
+                      data={attackData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={50}
+                      outerRadius={90}
+                      paddingAngle={2}
+                      dataKey="value"
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    >
+                      {attackData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+                  </RechartsPie>
+                </ResponsiveContainer>
+              </div>
+            </ClickableChart>
           </CardContent>
         </Card>
 
@@ -329,7 +403,7 @@ const HomePage = () => {
   );
 };
 
-// Dashboard EDA - Corrigé
+// Dashboard EDA
 const DashboardPage = () => {
   const [edaData, setEdaData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -348,12 +422,10 @@ const DashboardPage = () => {
     fetchEDA();
   }, []);
 
-  // Préparer les données pour le graphique des features (corrigé - utiliser log scale)
   const topFeaturesData = edaData?.top_features?.slice(0, 10).map(f => ({
     name: f.feature.length > 12 ? f.feature.substring(0, 12) + '...' : f.feature,
     fullName: f.feature,
     variance: f.variance,
-    // Utiliser échelle logarithmique pour meilleure visualisation
     logVariance: f.variance > 0 ? Math.log10(f.variance) : 0
   })) || [];
 
@@ -376,11 +448,53 @@ const DashboardPage = () => {
     );
   }
 
+  // Chart contents pour les modals
+  const labelChartContent = (
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart data={labelDistribution} layout="vertical" margin={{ left: 30, right: 30, bottom: 30 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+        <XAxis type="number" stroke="#94a3b8" label={{ value: 'Nombre d\'échantillons', position: 'bottom', fill: '#94a3b8', offset: 0 }} />
+        <YAxis dataKey="name" type="category" stroke="#94a3b8" width={100} fontSize={12} label={{ value: 'Type', angle: -90, position: 'insideLeft', fill: '#94a3b8' }} />
+        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+        <Legend />
+        <Bar dataKey="value" name="Nombre d'échantillons" fill={COLORS.primary} radius={[0, 4, 4, 0]} />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+
+  const protocolChartContent = (
+    <ResponsiveContainer width="100%" height="100%">
+      <RechartsPie>
+        <Pie data={protocolData} cx="50%" cy="50%" outerRadius={150} dataKey="value" label={({ name, value, percent }) => `${name}: ${value} (${(percent * 100).toFixed(1)}%)`}>
+          {protocolData.map((_, index) => (<Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />))}
+        </Pie>
+        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+        <Legend />
+      </RechartsPie>
+    </ResponsiveContainer>
+  );
+
+  const featuresChartContent = (
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart data={topFeaturesData} margin={{ bottom: 100, left: 20, right: 20 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+        <XAxis dataKey="name" stroke="#94a3b8" angle={-45} textAnchor="end" height={100} fontSize={11} interval={0} label={{ value: 'Feature', position: 'bottom', fill: '#94a3b8', offset: 70 }} />
+        <YAxis stroke="#94a3b8" tickFormatter={(v) => `10^${v.toFixed(0)}`} label={{ value: 'Variance (log₁₀)', angle: -90, position: 'insideLeft', fill: '#94a3b8' }} />
+        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} formatter={(value, name, props) => {
+          const realVariance = props.payload.variance;
+          return [realVariance >= 1000000 ? `${(realVariance/1000000).toFixed(2)}M` : realVariance >= 1000 ? `${(realVariance/1000).toFixed(2)}K` : realVariance.toFixed(2), 'Variance'];
+        }} labelFormatter={(label, payload) => payload[0]?.payload?.fullName || label} />
+        <Legend />
+        <Bar dataKey="logVariance" name="Variance (log)" fill={COLORS.success} radius={[4, 4, 0, 0]} />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+
   return (
     <div className="space-y-6 fade-in" data-testid="dashboard-page">
       <div>
         <h1 className="text-2xl font-bold font-mono">Analyse Exploratoire (EDA)</h1>
-        <p className="text-muted-foreground">Exploration du dataset NSL-KDD</p>
+        <p className="text-muted-foreground">Exploration du dataset NSL-KDD - Cliquer sur les graphiques pour agrandir</p>
       </div>
 
       {/* Distribution des labels */}
@@ -389,17 +503,19 @@ const DashboardPage = () => {
           <CardTitle className="font-mono">Distribution des types d'attaques</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={labelDistribution} layout="vertical" margin={{ left: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                <XAxis type="number" stroke="#94a3b8" />
-                <YAxis dataKey="name" type="category" stroke="#94a3b8" width={80} fontSize={11} />
-                <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
-                <Bar dataKey="value" fill={COLORS.primary} radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <ClickableChart title="Distribution des types d'attaques" chartContent={labelChartContent}>
+            <div className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={labelDistribution} layout="vertical" margin={{ left: 20, bottom: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                  <XAxis type="number" stroke="#94a3b8" label={{ value: 'Nombre d\'échantillons', position: 'bottom', fill: '#94a3b8', offset: -5 }} />
+                  <YAxis dataKey="name" type="category" stroke="#94a3b8" width={80} fontSize={11} />
+                  <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+                  <Bar dataKey="value" name="Échantillons" fill={COLORS.primary} radius={[0, 4, 4, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </ClickableChart>
         </CardContent>
       </Card>
 
@@ -410,65 +526,44 @@ const DashboardPage = () => {
             <CardTitle className="font-mono">Protocoles réseau</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-56">
-              <ResponsiveContainer width="100%" height="100%">
-                <RechartsPie>
-                  <Pie
-                    data={protocolData}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={70}
-                    dataKey="value"
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {protocolData.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
-                </RechartsPie>
-              </ResponsiveContainer>
-            </div>
+            <ClickableChart title="Distribution des protocoles réseau" chartContent={protocolChartContent}>
+              <div className="h-56">
+                <ResponsiveContainer width="100%" height="100%">
+                  <RechartsPie>
+                    <Pie data={protocolData} cx="50%" cy="50%" outerRadius={70} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+                      {protocolData.map((_, index) => (<Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />))}
+                    </Pie>
+                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+                  </RechartsPie>
+                </ResponsiveContainer>
+              </div>
+            </ClickableChart>
           </CardContent>
         </Card>
 
-        {/* Top Features - avec échelle log */}
+        {/* Top Features */}
         <Card className="cyber-card">
           <CardHeader>
             <CardTitle className="font-mono">Top Features (par variance)</CardTitle>
-            <CardDescription>Échelle logarithmique pour meilleure visualisation</CardDescription>
+            <CardDescription>Échelle logarithmique</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-56">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={topFeaturesData} margin={{ bottom: 70 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                  <XAxis 
-                    dataKey="name" 
-                    stroke="#94a3b8" 
-                    angle={-45} 
-                    textAnchor="end" 
-                    height={70} 
-                    fontSize={9}
-                    interval={0}
-                  />
-                  <YAxis 
-                    stroke="#94a3b8"
-                    domain={[0, 'auto']}
-                    tickFormatter={(v) => `10^${v.toFixed(0)}`}
-                  />
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }}
-                    formatter={(value, name, props) => {
+            <ClickableChart title="Top Features par variance" chartContent={featuresChartContent}>
+              <div className="h-56">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={topFeaturesData} margin={{ bottom: 70 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                    <XAxis dataKey="name" stroke="#94a3b8" angle={-45} textAnchor="end" height={70} fontSize={9} interval={0} />
+                    <YAxis stroke="#94a3b8" tickFormatter={(v) => `10^${v.toFixed(0)}`} label={{ value: 'Variance (log)', angle: -90, position: 'insideLeft', fill: '#94a3b8', fontSize: 10 }} />
+                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} formatter={(value, name, props) => {
                       const realVariance = props.payload.variance;
                       return [realVariance >= 1000000 ? `${(realVariance/1000000).toFixed(1)}M` : realVariance >= 1000 ? `${(realVariance/1000).toFixed(1)}K` : realVariance.toFixed(1), 'Variance'];
-                    }}
-                    labelFormatter={(label, payload) => payload[0]?.payload?.fullName || label}
-                  />
-                  <Bar dataKey="logVariance" fill={COLORS.success} radius={[4, 4, 0, 0]} name="Variance (log)" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+                    }} />
+                    <Bar dataKey="logVariance" name="Variance" fill={COLORS.success} radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </ClickableChart>
           </CardContent>
         </Card>
       </div>
@@ -501,9 +596,7 @@ const DashboardPage = () => {
                     <td className="p-2 font-mono">{row.src_bytes}</td>
                     <td className="p-2 font-mono">{row.dst_bytes}</td>
                     <td className="p-2">
-                      <Badge variant={row.label === 'normal' ? 'outline' : 'destructive'} className="text-xs">
-                        {row.label}
-                      </Badge>
+                      <Badge variant={row.label === 'normal' ? 'outline' : 'destructive'} className="text-xs">{row.label}</Badge>
                     </td>
                   </tr>
                 ))}
@@ -533,9 +626,7 @@ const ModelPage = () => {
     setLoading(false);
   }, []);
 
-  useEffect(() => {
-    fetchMetrics();
-  }, [fetchMetrics]);
+  useEffect(() => { fetchMetrics(); }, [fetchMetrics]);
 
   const handleTrain = async () => {
     setTraining(true);
@@ -554,25 +645,69 @@ const ModelPage = () => {
   const rfMetrics = metrics?.results?.random_forest;
 
   const comparisonData = dtMetrics && rfMetrics ? [
-    { name: 'Accuracy', dt: (dtMetrics.accuracy * 100).toFixed(1), rf: (rfMetrics.accuracy * 100).toFixed(1) },
-    { name: 'Precision', dt: (dtMetrics.precision * 100).toFixed(1), rf: (rfMetrics.precision * 100).toFixed(1) },
-    { name: 'Recall', dt: (dtMetrics.recall * 100).toFixed(1), rf: (rfMetrics.recall * 100).toFixed(1) },
-    { name: 'F1-Score', dt: (dtMetrics.f1_score * 100).toFixed(1), rf: (rfMetrics.f1_score * 100).toFixed(1) },
+    { name: 'Accuracy', dt: (dtMetrics.accuracy * 100).toFixed(2), rf: (rfMetrics.accuracy * 100).toFixed(2) },
+    { name: 'Precision', dt: (dtMetrics.precision * 100).toFixed(2), rf: (rfMetrics.precision * 100).toFixed(2) },
+    { name: 'Recall', dt: (dtMetrics.recall * 100).toFixed(2), rf: (rfMetrics.recall * 100).toFixed(2) },
+    { name: 'F1-Score', dt: (dtMetrics.f1_score * 100).toFixed(2), rf: (rfMetrics.f1_score * 100).toFixed(2) },
   ] : [];
 
   const featureImportance = rfMetrics?.feature_importance 
     ? Object.entries(rfMetrics.feature_importance).slice(0, 10).map(([name, value]) => ({ 
         name: name.length > 15 ? name.substring(0, 15) + '...' : name, 
-        value: (value * 100).toFixed(1) 
+        fullName: name,
+        value: (value * 100).toFixed(2) 
       }))
     : [];
+
+  // Chart contents pour modals
+  const comparisonChartContent = (
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart data={comparisonData} margin={{ bottom: 30 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+        <XAxis dataKey="name" stroke="#94a3b8" label={{ value: 'Métrique', position: 'bottom', fill: '#94a3b8', offset: 0 }} />
+        <YAxis stroke="#94a3b8" domain={[0, 100]} label={{ value: 'Score (%)', angle: -90, position: 'insideLeft', fill: '#94a3b8' }} />
+        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+        <Legend />
+        <Bar dataKey="dt" name="Decision Tree" fill={COLORS.secondary} radius={[4, 4, 0, 0]} />
+        <Bar dataKey="rf" name="Random Forest" fill={COLORS.success} radius={[4, 4, 0, 0]} />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+
+  const rocChartContent = (
+    <ResponsiveContainer width="100%" height="100%">
+      <AreaChart data={rfMetrics?.roc_data?.fpr?.map((fpr, i) => ({
+        fpr: fpr.toFixed(3),
+        tpr: rfMetrics.roc_data.tpr[i].toFixed(3)
+      })).filter((_, i) => i % 5 === 0)} margin={{ bottom: 40, left: 20 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+        <XAxis dataKey="fpr" stroke="#94a3b8" label={{ value: 'Taux de Faux Positifs (FPR)', position: 'bottom', fill: '#94a3b8', offset: 10 }} />
+        <YAxis stroke="#94a3b8" label={{ value: 'Taux de Vrais Positifs (TPR)', angle: -90, position: 'insideLeft', fill: '#94a3b8' }} />
+        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+        <Area type="monotone" dataKey="tpr" name="TPR" stroke={COLORS.primary} fill={COLORS.primary} fillOpacity={0.3} />
+      </AreaChart>
+    </ResponsiveContainer>
+  );
+
+  const featureChartContent = (
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart data={featureImportance} layout="vertical" margin={{ left: 30, right: 30 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+        <XAxis type="number" stroke="#94a3b8" label={{ value: 'Importance (%)', position: 'bottom', fill: '#94a3b8', offset: 0 }} />
+        <YAxis dataKey="name" type="category" stroke="#94a3b8" width={120} fontSize={11} label={{ value: 'Feature', angle: -90, position: 'insideLeft', fill: '#94a3b8' }} />
+        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} labelFormatter={(label, payload) => payload[0]?.payload?.fullName || label} />
+        <Legend />
+        <Bar dataKey="value" name="Importance" fill={COLORS.warning} radius={[0, 4, 4, 0]} />
+      </BarChart>
+    </ResponsiveContainer>
+  );
 
   return (
     <div className="space-y-6 fade-in" data-testid="model-page">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold font-mono">Classification Supervisée</h1>
-          <p className="text-muted-foreground">Decision Tree & Random Forest</p>
+          <p className="text-muted-foreground">Decision Tree & Random Forest - Cliquer pour agrandir</p>
         </div>
         <Button onClick={handleTrain} disabled={training} className="bg-primary hover:bg-primary/90" data-testid="train-btn">
           {training ? "Entraînement..." : "Entraîner les modèles"}
@@ -585,7 +720,6 @@ const ModelPage = () => {
         </div>
       ) : metrics?.results ? (
         <>
-          {/* Métriques */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <StatCard title="Accuracy (RF)" value={`${(rfMetrics?.accuracy * 100).toFixed(2)}%`} icon={CheckCircle} color="success" testId="m-acc" />
             <StatCard title="Precision (RF)" value={`${(rfMetrics?.precision * 100).toFixed(2)}%`} icon={Target} color="primary" testId="m-prec" />
@@ -599,19 +733,21 @@ const ModelPage = () => {
               <CardTitle className="font-mono">Comparaison des modèles</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={comparisonData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                    <XAxis dataKey="name" stroke="#94a3b8" />
-                    <YAxis stroke="#94a3b8" domain={[0, 100]} />
-                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
-                    <Legend />
-                    <Bar dataKey="dt" name="Decision Tree" fill={COLORS.secondary} radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="rf" name="Random Forest" fill={COLORS.success} radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              <ClickableChart title="Comparaison Decision Tree vs Random Forest" chartContent={comparisonChartContent}>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={comparisonData} margin={{ bottom: 20 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                      <XAxis dataKey="name" stroke="#94a3b8" label={{ value: 'Métrique', position: 'bottom', fill: '#94a3b8', offset: -5 }} />
+                      <YAxis stroke="#94a3b8" domain={[0, 100]} label={{ value: 'Score (%)', angle: -90, position: 'insideLeft', fill: '#94a3b8', fontSize: 11 }} />
+                      <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+                      <Legend />
+                      <Bar dataKey="dt" name="Decision Tree" fill={COLORS.secondary} radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="rf" name="Random Forest" fill={COLORS.success} radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </ClickableChart>
             </CardContent>
           </Card>
 
@@ -623,20 +759,21 @@ const ModelPage = () => {
                 <CardDescription>AUC = {rfMetrics?.roc_data?.auc?.toFixed(4)}</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-56">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={rfMetrics?.roc_data?.fpr?.map((fpr, i) => ({
-                      fpr: fpr.toFixed(2),
-                      tpr: rfMetrics.roc_data.tpr[i].toFixed(2)
-                    })).filter((_, i) => i % 10 === 0)}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                      <XAxis dataKey="fpr" stroke="#94a3b8" />
-                      <YAxis stroke="#94a3b8" />
-                      <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
-                      <Area type="monotone" dataKey="tpr" stroke={COLORS.primary} fill={COLORS.primary} fillOpacity={0.3} />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
+                <ClickableChart title="Courbe ROC (Receiver Operating Characteristic)" chartContent={rocChartContent}>
+                  <div className="h-56">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={rfMetrics?.roc_data?.fpr?.map((fpr, i) => ({
+                        fpr: fpr.toFixed(2), tpr: rfMetrics.roc_data.tpr[i].toFixed(2)
+                      })).filter((_, i) => i % 10 === 0)} margin={{ bottom: 25 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                        <XAxis dataKey="fpr" stroke="#94a3b8" label={{ value: 'FPR', position: 'bottom', fill: '#94a3b8', offset: -5, fontSize: 10 }} />
+                        <YAxis stroke="#94a3b8" label={{ value: 'TPR', angle: -90, position: 'insideLeft', fill: '#94a3b8', fontSize: 10 }} />
+                        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+                        <Area type="monotone" dataKey="tpr" name="TPR" stroke={COLORS.primary} fill={COLORS.primary} fillOpacity={0.3} />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </ClickableChart>
               </CardContent>
             </Card>
 
@@ -646,17 +783,19 @@ const ModelPage = () => {
                 <CardTitle className="font-mono">Importance des features</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-56">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={featureImportance} layout="vertical" margin={{ left: 10 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                      <XAxis type="number" stroke="#94a3b8" />
-                      <YAxis dataKey="name" type="category" stroke="#94a3b8" width={90} fontSize={10} />
-                      <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
-                      <Bar dataKey="value" fill={COLORS.warning} radius={[0, 4, 4, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
+                <ClickableChart title="Importance des features (Random Forest)" chartContent={featureChartContent}>
+                  <div className="h-56">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={featureImportance} layout="vertical" margin={{ left: 10 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                        <XAxis type="number" stroke="#94a3b8" label={{ value: 'Importance (%)', position: 'bottom', fill: '#94a3b8', offset: -5, fontSize: 10 }} />
+                        <YAxis dataKey="name" type="category" stroke="#94a3b8" width={90} fontSize={10} />
+                        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+                        <Bar dataKey="value" name="Importance" fill={COLORS.warning} radius={[0, 4, 4, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </ClickableChart>
               </CardContent>
             </Card>
           </div>
@@ -723,7 +862,6 @@ const PredictionPage = () => {
   };
 
   const setDemoNormal = () => {
-    // These values are typical of legitimate HTTP traffic
     setFeatures({
       duration: 8, protocol_type: 'tcp', service: 'http', flag: 'SF',
       src_bytes: 320, dst_bytes: 12500, count: 2, srv_count: 2, serror_rate: 0.0,
@@ -733,7 +871,6 @@ const PredictionPage = () => {
   };
 
   const setDemoAttack = () => {
-    // These values are typical of DoS SYN flood attack (high count, S0 flag, no response)
     setFeatures({
       duration: 0, protocol_type: 'tcp', service: 'private', flag: 'S0',
       src_bytes: 0, dst_bytes: 0, count: 450, srv_count: 400, serror_rate: 0.95,
@@ -855,12 +992,12 @@ const PredictionPage = () => {
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Probabilité Normal</span>
-                    <span className="font-mono text-emerald-400">{(prediction.probability.normal * 100).toFixed(1)}%</span>
+                    <span className="font-mono text-emerald-400">{(prediction.probability.normal * 100).toFixed(2)}%</span>
                   </div>
                   <Progress value={prediction.probability.normal * 100} className="h-2" />
                   <div className="flex justify-between text-sm">
                     <span>Probabilité Attaque</span>
-                    <span className="font-mono text-red-400">{(prediction.probability.attack * 100).toFixed(1)}%</span>
+                    <span className="font-mono text-red-400">{(prediction.probability.attack * 100).toFixed(2)}%</span>
                   </div>
                   <Progress value={prediction.probability.attack * 100} className="h-2" />
                 </div>
@@ -894,9 +1031,7 @@ const ClusteringPage = () => {
     setLoading(false);
   }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  useEffect(() => { fetchData(); }, [fetchData]);
 
   const handleRun = async () => {
     setLoading(true);
@@ -914,12 +1049,55 @@ const ClusteringPage = () => {
   const elbowData = data?.elbow_data || [];
   const pcaData = data?.pca_data?.slice(0, 500) || [];
 
+  // Chart contents pour modals
+  const elbowChartContent = (
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={elbowData} margin={{ bottom: 40, left: 20, right: 20 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+        <XAxis dataKey="k" stroke="#94a3b8" label={{ value: 'Nombre de clusters (K)', position: 'bottom', fill: '#94a3b8', offset: 10 }} />
+        <YAxis yAxisId="left" stroke="#94a3b8" label={{ value: 'Inertie', angle: -90, position: 'insideLeft', fill: '#94a3b8' }} />
+        <YAxis yAxisId="right" orientation="right" stroke="#94a3b8" label={{ value: 'Silhouette', angle: 90, position: 'insideRight', fill: '#94a3b8' }} />
+        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+        <Legend />
+        <Line yAxisId="left" type="monotone" dataKey="inertia" name="Inertie" stroke={COLORS.primary} strokeWidth={2} />
+        <Line yAxisId="right" type="monotone" dataKey="silhouette" name="Silhouette" stroke={COLORS.success} strokeWidth={2} />
+      </LineChart>
+    </ResponsiveContainer>
+  );
+
+  const clusterDistContent = (
+    <ResponsiveContainer width="100%" height="100%">
+      <RechartsPie>
+        <Pie data={Object.entries(data?.cluster_distribution || {}).map(([name, value]) => ({ name, value }))} cx="50%" cy="50%" outerRadius={150} dataKey="value" label={({ name, value, percent }) => `${name}: ${value} (${(percent * 100).toFixed(1)}%)`}>
+          {Object.entries(data?.cluster_distribution || {}).map((_, index) => (<Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />))}
+        </Pie>
+        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+        <Legend />
+      </RechartsPie>
+    </ResponsiveContainer>
+  );
+
+  const pcaChartContent = (
+    <ResponsiveContainer width="100%" height="100%">
+      <ScatterChart margin={{ bottom: 40, left: 20, right: 20 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+        <XAxis dataKey="x" name="PC1" stroke="#94a3b8" label={{ value: 'Composante Principale 1 (PC1)', position: 'bottom', fill: '#94a3b8', offset: 10 }} />
+        <YAxis dataKey="y" name="PC2" stroke="#94a3b8" label={{ value: 'Composante Principale 2 (PC2)', angle: -90, position: 'insideLeft', fill: '#94a3b8' }} />
+        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+        <Legend />
+        {[...new Set(pcaData.map(d => d.cluster))].map((cluster, idx) => (
+          <Scatter key={cluster} name={`Cluster ${cluster}`} data={pcaData.filter(d => d.cluster === cluster)} fill={CHART_COLORS[idx % CHART_COLORS.length]} />
+        ))}
+      </ScatterChart>
+    </ResponsiveContainer>
+  );
+
   return (
     <div className="space-y-6 fade-in" data-testid="clustering-page">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold font-mono">Clustering K-Means</h1>
-          <p className="text-muted-foreground">Apprentissage non-supervisé</p>
+          <p className="text-muted-foreground">Apprentissage non-supervisé - Cliquer pour agrandir</p>
         </div>
         <Button onClick={handleRun} disabled={loading} className="bg-primary hover:bg-primary/90">
           {loading ? "Exécution..." : "Exécuter K-Means"}
@@ -930,8 +1108,8 @@ const ClusteringPage = () => {
         <>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <StatCard title="Clusters" value={data.n_clusters} icon={PieChart} color="primary" />
-            <StatCard title="Silhouette Score" value={data.silhouette_score?.toFixed(3)} icon={TrendingUp} color="success" />
-            <StatCard title="Variance PCA" value={data.pca_explained_variance ? `${(data.pca_explained_variance.reduce((a, b) => a + b, 0) * 100).toFixed(0)}%` : '-'} icon={BarChart3} color="info" />
+            <StatCard title="Silhouette Score" value={data.silhouette_score?.toFixed(4)} icon={TrendingUp} color="success" />
+            <StatCard title="Variance PCA" value={data.pca_explained_variance ? `${(data.pca_explained_variance.reduce((a, b) => a + b, 0) * 100).toFixed(2)}%` : '-'} icon={BarChart3} color="info" />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -940,20 +1118,22 @@ const ClusteringPage = () => {
                 <CardTitle className="font-mono">Méthode du coude</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-56">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={elbowData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                      <XAxis dataKey="k" stroke="#94a3b8" />
-                      <YAxis yAxisId="left" stroke="#94a3b8" />
-                      <YAxis yAxisId="right" orientation="right" stroke="#94a3b8" />
-                      <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
-                      <Legend />
-                      <Line yAxisId="left" type="monotone" dataKey="inertia" name="Inertie" stroke={COLORS.primary} strokeWidth={2} />
-                      <Line yAxisId="right" type="monotone" dataKey="silhouette" name="Silhouette" stroke={COLORS.success} strokeWidth={2} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
+                <ClickableChart title="Méthode du coude (Elbow Method)" chartContent={elbowChartContent}>
+                  <div className="h-56">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={elbowData} margin={{ bottom: 25 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                        <XAxis dataKey="k" stroke="#94a3b8" label={{ value: 'K', position: 'bottom', fill: '#94a3b8', offset: -5, fontSize: 10 }} />
+                        <YAxis yAxisId="left" stroke="#94a3b8" label={{ value: 'Inertie', angle: -90, position: 'insideLeft', fill: '#94a3b8', fontSize: 10 }} />
+                        <YAxis yAxisId="right" orientation="right" stroke="#94a3b8" label={{ value: 'Silhouette', angle: 90, position: 'insideRight', fill: '#94a3b8', fontSize: 10 }} />
+                        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+                        <Legend />
+                        <Line yAxisId="left" type="monotone" dataKey="inertia" name="Inertie" stroke={COLORS.primary} strokeWidth={2} />
+                        <Line yAxisId="right" type="monotone" dataKey="silhouette" name="Silhouette" stroke={COLORS.success} strokeWidth={2} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </ClickableChart>
               </CardContent>
             </Card>
 
@@ -962,25 +1142,18 @@ const ClusteringPage = () => {
                 <CardTitle className="font-mono">Distribution des clusters</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-56">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RechartsPie>
-                      <Pie
-                        data={Object.entries(data.cluster_distribution || {}).map(([name, value]) => ({ name, value }))}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={70}
-                        dataKey="value"
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      >
-                        {Object.entries(data.cluster_distribution || {}).map((_, index) => (
-                          <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
-                    </RechartsPie>
-                  </ResponsiveContainer>
-                </div>
+                <ClickableChart title="Distribution des clusters" chartContent={clusterDistContent}>
+                  <div className="h-56">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RechartsPie>
+                        <Pie data={Object.entries(data.cluster_distribution || {}).map(([name, value]) => ({ name, value }))} cx="50%" cy="50%" outerRadius={70} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+                          {Object.entries(data.cluster_distribution || {}).map((_, index) => (<Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />))}
+                        </Pie>
+                        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+                      </RechartsPie>
+                    </ResponsiveContainer>
+                  </div>
+                </ClickableChart>
               </CardContent>
             </Card>
           </div>
@@ -991,20 +1164,22 @@ const ClusteringPage = () => {
               <CardDescription>Projection 2D des clusters</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-72">
-                <ResponsiveContainer width="100%" height="100%">
-                  <ScatterChart>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                    <XAxis dataKey="x" name="PC1" stroke="#94a3b8" />
-                    <YAxis dataKey="y" name="PC2" stroke="#94a3b8" />
-                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
-                    <Legend />
-                    {[...new Set(pcaData.map(d => d.cluster))].map((cluster, idx) => (
-                      <Scatter key={cluster} name={`Cluster ${cluster}`} data={pcaData.filter(d => d.cluster === cluster)} fill={CHART_COLORS[idx % CHART_COLORS.length]} />
-                    ))}
-                  </ScatterChart>
-                </ResponsiveContainer>
-              </div>
+              <ClickableChart title="Visualisation PCA des clusters" chartContent={pcaChartContent}>
+                <div className="h-72">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ScatterChart margin={{ bottom: 30 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                      <XAxis dataKey="x" name="PC1" stroke="#94a3b8" label={{ value: 'PC1', position: 'bottom', fill: '#94a3b8', offset: 0, fontSize: 11 }} />
+                      <YAxis dataKey="y" name="PC2" stroke="#94a3b8" label={{ value: 'PC2', angle: -90, position: 'insideLeft', fill: '#94a3b8', fontSize: 11 }} />
+                      <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
+                      <Legend />
+                      {[...new Set(pcaData.map(d => d.cluster))].map((cluster, idx) => (
+                        <Scatter key={cluster} name={`Cluster ${cluster}`} data={pcaData.filter(d => d.cluster === cluster)} fill={CHART_COLORS[idx % CHART_COLORS.length]} />
+                      ))}
+                    </ScatterChart>
+                  </ResponsiveContainer>
+                </div>
+              </ClickableChart>
             </CardContent>
           </Card>
         </>
@@ -1018,7 +1193,7 @@ const ClusteringPage = () => {
   );
 };
 
-// App principal - Sans route Download
+// App principal
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
