@@ -1,34 +1,106 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* Additional App-specific styles */
+.App {
+  min-height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+/* Override default link styles */
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+/* Recharts tooltip customization */
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background-color: hsl(222, 47%, 7%) !important;
+  border: 1px solid hsl(217, 33%, 17%) !important;
+  border-radius: 8px !important;
 }
 
-.App-link {
-    color: #61dafb;
+.recharts-tooltip-wrapper .recharts-tooltip-label {
+  color: hsl(210, 40%, 98%) !important;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+/* Custom badge colors */
+.badge-normal {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: rgb(16, 185, 129);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+}
+
+.badge-attack {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: rgb(239, 68, 68);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+/* Animation for loading states */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.loading-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(217, 33%, 17%) 25%,
+    hsl(217, 33%, 25%) 50%,
+    hsl(217, 33%, 17%) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Responsive table styles */
+.data-table {
+  @apply w-full text-sm;
+}
+
+.data-table th {
+  @apply text-left p-3 font-mono text-muted-foreground border-b border-border;
+}
+
+.data-table td {
+  @apply p-3 border-b border-border/50;
+}
+
+.data-table tr:hover {
+  @apply bg-secondary/20;
+}
+
+/* Card variants */
+.card-success {
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+.card-danger {
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+}
+
+.card-warning {
+  border-color: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+}
+
+/* Custom focus styles */
+*:focus-visible {
+  outline: 2px solid hsl(186, 70%, 45%);
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
 }
