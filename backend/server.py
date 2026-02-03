@@ -226,13 +226,6 @@ def load_nsl_kdd_data():
             'dst_host_srv_rerror_rate': np.random.beta(2, 5, n_attack),
             'difficulty_level': np.random.randint(8, 22, n_attack),
             'label': np.random.choice(DOS_ATTACKS[:6], n_attack)
-            'dst_host_srv_diff_host_rate': np.random.uniform(0, 0.5, n_attack),
-            'dst_host_serror_rate': np.random.uniform(0.5, 1.0, n_attack),  # HIGH error
-            'dst_host_srv_serror_rate': np.random.uniform(0.5, 1.0, n_attack),
-            'dst_host_rerror_rate': np.random.uniform(0.2, 0.6, n_attack),
-            'dst_host_srv_rerror_rate': np.random.uniform(0.2, 0.6, n_attack),
-            'difficulty_level': np.random.randint(10, 22, n_attack),
-            'label': np.random.choice(DOS_ATTACKS[:6], n_attack)  # All are DoS attacks
         }
         
         # Combine normal and attack data
