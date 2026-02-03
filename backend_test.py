@@ -12,7 +12,7 @@ from datetime import datetime
 from typing import Dict, Any
 
 # PUBLIC URL for testing
-BACKEND_URL = "https://network-intrusion-ai.preview.emergentagent.com"
+BACKEND_URL = "https://cyber-sentinel-app.preview.emergentagent.com"
 API_BASE = f"{BACKEND_URL}/api"
 
 class CyberSentinelleAPITester:
