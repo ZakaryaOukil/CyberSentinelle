@@ -1560,7 +1560,7 @@ const LiveMonitorPage = () => {
           <ClickableChart title="Trafic réseau en temps réel" chartContent={trafficChartContent}>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={trafficData?.traffic_history || []}>
+                <AreaChart data={trafficHistory}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                   <XAxis dataKey="time" stroke="#94a3b8" />
                   <YAxis stroke="#94a3b8" />
