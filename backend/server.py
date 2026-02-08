@@ -2318,3 +2318,23 @@ async def startup_event():
     # Ensure directories exist
     DATA_DIR.mkdir(exist_ok=True)
     MODELS_DIR.mkdir(exist_ok=True)
+
+# Middleware to track all incoming requests
+@app.middleware("http")
+async def track_requests(request: Request, call_next):
+    """Track all incoming requests for monitoring"""
+    current_time = time.time()
+    client_host = request.client.host if request.client else "unknown"
+    
+    # Don't track monitor/traffic endpoint to avoid recursion
+    if "/monitor/traffic" not in str(request.url.path):
+        traffic_monitor["requests"].append({
+            "timestamp": current_time,
+            "source_ip": client_host,
+            "path": str(request.url.path),
+            "method": request.method
+        })
+        traffic_monitor["total_requests"] += 1
+    
+    response = await call_next(request)
+    return response
