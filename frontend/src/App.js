@@ -1465,7 +1465,7 @@ const LiveMonitorPage = () => {
               <div>
                 <p className="text-xs text-muted-foreground">Confiance</p>
                 <p className="text-2xl font-bold font-mono text-purple-500">
-                  {trafficData?.attack_indicators?.confidence || 0}%
+                  {attackConfidence}%
                 </p>
               </div>
               <Brain className="w-8 h-8 text-purple-500" />
