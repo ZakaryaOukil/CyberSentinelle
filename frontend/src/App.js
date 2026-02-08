@@ -1232,7 +1232,7 @@ const LiveMonitorPage = () => {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [attackIntensity, setAttackIntensity] = useState(100);
   const [logs, setLogs] = useState([]);
-  const audioRef = React.useRef(null);
+  const attackIntervalRef = useRef(null);
 
   // Fetch traffic data every second
   useEffect(() => {
