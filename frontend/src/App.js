@@ -1343,10 +1343,14 @@ const LiveMonitorPage = () => {
     }
   };
 
-  const status = trafficData?.status || "NORMAL";
+  const status = trafficData ? trafficData.status : "NORMAL";
   const isUnderAttack = status === "ATTACK_DETECTED";
-  const rps = trafficData?.requests_per_second || 0;
-  const threshold = trafficData?.threshold || 50;
+  const rps = trafficData ? trafficData.requests_per_second : 0;
+  const threshold = trafficData ? trafficData.threshold : 50;
+  const trafficHistory = trafficData ? trafficData.traffic_history : [];
+  const totalRequests = trafficData ? trafficData.total_requests : 0;
+  const attackConfidence = trafficData && trafficData.attack_indicators ? trafficData.attack_indicators.confidence : 0;
+  const uniqueSources = trafficData && trafficData.attack_indicators ? trafficData.attack_indicators.unique_sources : 0;
 
   // Traffic history chart content
   const trafficChartContent = (
