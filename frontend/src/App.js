@@ -1224,6 +1224,40 @@ const ClusteringPage = () => {
   );
 };
 
+// Composant pour afficher les logs de sécurité
+const LogsList = ({ logs }) => {
+  const reversedLogs = [...logs].reverse();
+  
+  const getLogColor = (severity) => {
+    if (severity === 'CRITICAL') return 'text-red-400';
+    if (severity === 'WARNING') return 'text-amber-400';
+    return 'text-emerald-400';
+  };
+  
+  const getSeverityColor = (severity) => {
+    if (severity === 'CRITICAL') return 'text-red-500';
+    if (severity === 'WARNING') return 'text-amber-500';
+    return 'text-emerald-500';
+  };
+  
+  return (
+    <>
+      {reversedLogs.map((log, idx) => (
+        <div 
+          key={log.id || idx} 
+          className={`py-1 border-b border-slate-800 last:border-0 ${getLogColor(log.severity)}`}
+        >
+          <span className="text-muted-foreground">[{new Date(log.timestamp).toLocaleTimeString()}]</span>{' '}
+          <span className={`font-bold ${getSeverityColor(log.severity)}`}>
+            [{log.severity}]
+          </span>{' '}
+          {log.message}
+        </div>
+      ))}
+    </>
+  );
+};
+
 // Page Live Monitor - Surveillance en temps réel
 const LiveMonitorPage = () => {
   const [trafficData, setTrafficData] = useState(null);
