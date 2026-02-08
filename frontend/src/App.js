@@ -1608,7 +1608,7 @@ const LiveMonitorPage = () => {
       </Card>
 
       {/* Attack Indicators */}
-      {trafficData?.attack_indicators?.patterns?.length > 0 && (
+      {trafficData && trafficData.attack_indicators && trafficData.attack_indicators.patterns && trafficData.attack_indicators.patterns.length > 0 && (
         <Card className="cyber-card border-red-500/50">
           <CardHeader>
             <CardTitle className="font-mono text-red-500">Patterns d'attaque détectés</CardTitle>
