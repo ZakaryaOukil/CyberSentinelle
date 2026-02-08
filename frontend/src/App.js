@@ -1355,7 +1355,7 @@ const LiveMonitorPage = () => {
   // Traffic history chart content
   const trafficChartContent = (
     <ResponsiveContainer width="100%" height="100%">
-      <AreaChart data={trafficData?.traffic_history || []} margin={{ bottom: 30 }}>
+      <AreaChart data={trafficHistory} margin={{ bottom: 30 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
         <XAxis dataKey="time" stroke="#94a3b8" label={{ value: 'Temps (secondes)', position: 'bottom', fill: '#94a3b8' }} />
         <YAxis stroke="#94a3b8" label={{ value: 'Requêtes/sec', angle: -90, position: 'insideLeft', fill: '#94a3b8' }} />
