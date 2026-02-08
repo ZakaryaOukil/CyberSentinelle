@@ -51,6 +51,20 @@ MODELS_DIR = ROOT_DIR / "models"
 DATA_DIR.mkdir(exist_ok=True)
 MODELS_DIR.mkdir(exist_ok=True)
 
+# === TRAFFIC MONITORING SYSTEM ===
+# Store recent requests for real-time monitoring
+traffic_monitor = {
+    "requests": deque(maxlen=1000),  # Last 1000 requests
+    "alerts": deque(maxlen=100),     # Last 100 security alerts
+    "start_time": time.time(),
+    "total_requests": 0,
+    "attack_detected": False,
+    "attack_start_time": None,
+    "current_status": "NORMAL",
+    "threshold_requests_per_second": 50,  # Alert threshold
+    "detection_window": 5  # seconds
+}
+
 # NSL-KDD column names
 NSL_KDD_COLUMNS = [
     'duration', 'protocol_type', 'service', 'flag', 'src_bytes', 'dst_bytes',
