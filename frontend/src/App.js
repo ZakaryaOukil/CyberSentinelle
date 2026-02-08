@@ -22,6 +22,7 @@ import {
   ScatterChart, Scatter, AreaChart, Area
 } from "recharts";
 import "@/App.css";
+import LiveMonitorPage from "./pages/Monitor";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
