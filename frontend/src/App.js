@@ -120,6 +120,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   
   const navItems = [
     { path: "/", icon: Shield, label: "Accueil", testId: "nav-home" },
+    { path: "/monitor", icon: Radio, label: "🔴 Live Monitor", testId: "nav-monitor" },
     { path: "/dashboard", icon: Activity, label: "Dashboard EDA", testId: "nav-dashboard" },
     { path: "/model", icon: Brain, label: "Modèle ML", testId: "nav-model" },
     { path: "/prediction", icon: Target, label: "Prédiction", testId: "nav-prediction" },
