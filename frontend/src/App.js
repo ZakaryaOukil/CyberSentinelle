@@ -1314,14 +1314,14 @@ const LiveMonitorPage = () => {
     let attackInterval = setInterval(sendPings, 1000);
     
     // Store interval ID to stop later
-    window.attackInterval = attackInterval;
+    attackIntervalRef.current = attackInterval;
   };
 
   const stopAttackSimulation = () => {
     setIsAttacking(false);
-    if (window.attackInterval) {
-      clearInterval(window.attackInterval);
-      window.attackInterval = null;
+    if (attackIntervalRef.current) {
+      clearInterval(attackIntervalRef.current);
+      attackIntervalRef.current = null;
     }
     toast.success("✅ Simulation arrêtée");
     setLogs(prev => [...prev, {
