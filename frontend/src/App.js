@@ -1273,11 +1273,14 @@ const LiveMonitorPage = () => {
     const fetchTraffic = async () => {
       try {
         const response = await axios.get(`${API}/monitor/traffic`);
-        setTrafficData(response.data);
+        const data = response.data;
+        setTrafficData(data);
         
         // Add to logs if there are new alerts
-        if (response.data.alerts && response.data.alerts.length > 0) {
-          const latestAlert = response.data.alerts[response.data.alerts.length - 1];
+        const alerts = data.alerts;
+        if (alerts && alerts.length > 0) {
+          const lastIndex = alerts.length - 1;
+          const latestAlert = alerts[lastIndex];
           setLogs(prev => {
             const exists = prev.some(l => l.id === latestAlert.id);
             if (!exists) {
@@ -1285,7 +1288,8 @@ const LiveMonitorPage = () => {
               if (soundEnabled && latestAlert.severity === "CRITICAL") {
                 playAlertSound();
               }
-              return [...prev.slice(-50), latestAlert];
+              const newLogs = prev.slice(-50);
+              return [...newLogs, latestAlert];
             }
             return prev;
           });
