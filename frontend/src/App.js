@@ -1588,24 +1588,7 @@ const LiveMonitorPage = () => {
             {logs.length === 0 ? (
               <p className="text-muted-foreground">En attente d'événements...</p>
             ) : (
-              logs.slice().reverse().map((log, idx) => (
-                <div 
-                  key={log.id || idx} 
-                  className={`py-1 border-b border-slate-800 last:border-0 ${
-                    log.severity === 'CRITICAL' ? 'text-red-400' : 
-                    log.severity === 'WARNING' ? 'text-amber-400' : 'text-emerald-400'
-                  }`}
-                >
-                  <span className="text-muted-foreground">[{new Date(log.timestamp).toLocaleTimeString()}]</span>{' '}
-                  <span className={`font-bold ${
-                    log.severity === 'CRITICAL' ? 'text-red-500' : 
-                    log.severity === 'WARNING' ? 'text-amber-500' : 'text-emerald-500'
-                  }`}>
-                    [{log.severity}]
-                  </span>{' '}
-                  {log.message}
-                </div>
-              ))
+              <LogsList logs={logs} />
             )}
           </div>
         </CardContent>
