@@ -5,7 +5,8 @@ import axios from "axios";
 import {
   Shield, Activity, Database, Brain, Target, Download, Menu, X,
   AlertTriangle, CheckCircle, Server, Cpu, Globe, Lock, Zap,
-  BarChart3, PieChart, TrendingUp, FileText, Play, Maximize2
+  BarChart3, PieChart, TrendingUp, FileText, Play, Maximize2,
+  Radio, Wifi, WifiOff, AlertCircle, Volume2, VolumeX
 } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./components/ui/card";
