@@ -1426,7 +1426,7 @@ const LiveMonitorPage = () => {
           </div>
           <div className="text-right">
             <p className="text-sm text-muted-foreground">Total requêtes</p>
-            <p className="text-3xl font-bold font-mono">{trafficData?.total_requests?.toLocaleString() || 0}</p>
+            <p className="text-3xl font-bold font-mono">{totalRequests.toLocaleString()}</p>
           </div>
         </div>
       </div>
