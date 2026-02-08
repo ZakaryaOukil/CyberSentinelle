@@ -1479,7 +1479,7 @@ const LiveMonitorPage = () => {
               <div>
                 <p className="text-xs text-muted-foreground">Sources uniques</p>
                 <p className="text-2xl font-bold font-mono text-cyan-500">
-                  {trafficData?.attack_indicators?.unique_sources || 0}
+                  {uniqueSources}
                 </p>
               </div>
               <Globe className="w-8 h-8 text-cyan-500" />
