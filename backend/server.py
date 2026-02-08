@@ -2121,6 +2121,174 @@ print("   2. streamlit run streamlit_app.py")"""))
     
     return {"status": "success", "message": "Notebook generated successfully", "path": str(notebook_path)}
 
+# === LIVE TRAFFIC MONITORING ENDPOINTS ===
+
+@api_router.get("/monitor/traffic")
+async def get_traffic_stats():
+    """Get real-time traffic statistics"""
+    current_time = time.time()
+    window_start = current_time - traffic_monitor["detection_window"]
+    
+    # Count requests in detection window
+    recent_requests = [r for r in traffic_monitor["requests"] if r["timestamp"] > window_start]
+    requests_per_second = len(recent_requests) / traffic_monitor["detection_window"] if traffic_monitor["detection_window"] > 0 else 0
+    
+    # Analyze traffic patterns
+    attack_indicators = analyze_traffic_patterns(recent_requests)
+    
+    # Determine status
+    if requests_per_second > traffic_monitor["threshold_requests_per_second"] or attack_indicators["is_attack"]:
+        if not traffic_monitor["attack_detected"]:
+            traffic_monitor["attack_detected"] = True
+            traffic_monitor["attack_start_time"] = current_time
+            traffic_monitor["current_status"] = "ATTACK_DETECTED"
+            # Add alert
+            alert = {
+                "id": str(uuid.uuid4()),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "type": "DOS_ATTACK",
+                "severity": "CRITICAL",
+                "message": f"🚨 ALERTE: Attaque DoS détectée! {requests_per_second:.1f} req/s (seuil: {traffic_monitor['threshold_requests_per_second']})",
+                "details": attack_indicators
+            }
+            traffic_monitor["alerts"].append(alert)
+    else:
+        if traffic_monitor["attack_detected"]:
+            # Attack ended
+            alert = {
+                "id": str(uuid.uuid4()),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "type": "ATTACK_ENDED",
+                "severity": "INFO",
+                "message": "✅ Attaque terminée. Retour à la normale.",
+                "details": {}
+            }
+            traffic_monitor["alerts"].append(alert)
+        traffic_monitor["attack_detected"] = False
+        traffic_monitor["attack_start_time"] = None
+        traffic_monitor["current_status"] = "NORMAL"
+    
+    # Get traffic history (last 60 data points)
+    traffic_history = get_traffic_history()
+    
+    return {
+        "status": traffic_monitor["current_status"],
+        "attack_detected": traffic_monitor["attack_detected"],
+        "requests_per_second": round(requests_per_second, 2),
+        "total_requests": traffic_monitor["total_requests"],
+        "threshold": traffic_monitor["threshold_requests_per_second"],
+        "uptime_seconds": round(current_time - traffic_monitor["start_time"], 0),
+        "recent_requests_count": len(recent_requests),
+        "attack_indicators": attack_indicators,
+        "traffic_history": traffic_history,
+        "alerts": list(traffic_monitor["alerts"])[-10:]  # Last 10 alerts
+    }
+
+def analyze_traffic_patterns(requests):
+    """Analyze traffic for attack patterns"""
+    if len(requests) < 5:
+        return {"is_attack": False, "confidence": 0, "patterns": []}
+    
+    patterns = []
+    
+    # Check for same source flooding
+    sources = {}
+    for r in requests:
+        src = r.get("source_ip", "unknown")
+        sources[src] = sources.get(src, 0) + 1
+    
+    max_from_single_source = max(sources.values()) if sources else 0
+    if max_from_single_source > len(requests) * 0.5:
+        patterns.append("SINGLE_SOURCE_FLOOD")
+    
+    # Check for rapid succession (< 50ms between requests)
+    timestamps = sorted([r["timestamp"] for r in requests])
+    rapid_count = 0
+    for i in range(1, len(timestamps)):
+        if timestamps[i] - timestamps[i-1] < 0.05:
+            rapid_count += 1
+    
+    if rapid_count > len(requests) * 0.3:
+        patterns.append("RAPID_FIRE")
+    
+    # Check for identical request patterns
+    paths = [r.get("path", "") for r in requests]
+    if len(set(paths)) == 1 and len(paths) > 10:
+        patterns.append("IDENTICAL_REQUESTS")
+    
+    is_attack = len(patterns) > 0 or len(requests) > 30
+    confidence = min(100, len(patterns) * 30 + (len(requests) / 10) * 10)
+    
+    return {
+        "is_attack": is_attack,
+        "confidence": round(confidence, 1),
+        "patterns": patterns,
+        "unique_sources": len(sources),
+        "max_from_single_source": max_from_single_source
+    }
+
+def get_traffic_history():
+    """Get traffic history for charts"""
+    current_time = time.time()
+    history = []
+    
+    # Create 60 data points (last 60 seconds)
+    for i in range(60):
+        second_start = current_time - (60 - i)
+        second_end = second_start + 1
+        count = len([r for r in traffic_monitor["requests"] 
+                    if second_start <= r["timestamp"] < second_end])
+        history.append({
+            "time": i,
+            "requests": count,
+            "threshold": traffic_monitor["threshold_requests_per_second"]
+        })
+    
+    return history
+
+@api_router.post("/monitor/ping")
+async def ping_endpoint(request: Request):
+    """Endpoint to receive ping/requests for monitoring"""
+    current_time = time.time()
+    
+    # Get client info
+    client_host = request.client.host if request.client else "unknown"
+    
+    # Record the request
+    traffic_monitor["requests"].append({
+        "timestamp": current_time,
+        "source_ip": client_host,
+        "path": "/api/monitor/ping",
+        "method": "POST"
+    })
+    traffic_monitor["total_requests"] += 1
+    
+    return {"status": "ok", "timestamp": current_time}
+
+@api_router.get("/monitor/alerts")
+async def get_alerts():
+    """Get security alerts"""
+    return {"alerts": list(traffic_monitor["alerts"])}
+
+@api_router.post("/monitor/reset")
+async def reset_monitor():
+    """Reset the traffic monitor"""
+    traffic_monitor["requests"].clear()
+    traffic_monitor["alerts"].clear()
+    traffic_monitor["total_requests"] = 0
+    traffic_monitor["attack_detected"] = False
+    traffic_monitor["attack_start_time"] = None
+    traffic_monitor["current_status"] = "NORMAL"
+    traffic_monitor["start_time"] = time.time()
+    
+    return {"status": "reset", "message": "Moniteur réinitialisé"}
+
+@api_router.post("/monitor/set-threshold")
+async def set_threshold(threshold: int):
+    """Set the attack detection threshold"""
+    traffic_monitor["threshold_requests_per_second"] = max(10, min(500, threshold))
+    return {"threshold": traffic_monitor["threshold_requests_per_second"]}
+
 # Include the router in the main app
 app.include_router(api_router)
 
