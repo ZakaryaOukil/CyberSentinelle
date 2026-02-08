@@ -131,6 +131,10 @@ export default function LiveMonitorPage() {
       await Promise.all(promises);
     };
 
+    // Send first batch immediately
+    sendPings();
+    
+    // Then continue sending every second
     attackIntervalRef.current = setInterval(sendPings, 1000);
   };
 
