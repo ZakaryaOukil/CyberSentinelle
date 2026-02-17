@@ -1,211 +1,124 @@
-import React, { useRef, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Points, PointMaterial, OrbitControls } from '@react-three/drei';
-import * as THREE from 'three';
+import React, { useEffect, useRef } from 'react';
 
-// Particle Network Sphere
-function ParticleNetwork({ count = 2000 }) {
-  const ref = useRef();
+// CSS-based animated globe (no Three.js to avoid version conflicts)
+export default function CyberGlobe({ showAlerts = false }) {
+  const canvasRef = useRef(null);
   
-  const particles = useMemo(() => {
-    const positions = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
     
-    for (let i = 0; i < count; i++) {
-      // Create sphere distribution
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width = canvas.offsetWidth * 2;
+    const height = canvas.height = canvas.offsetHeight * 2;
+    ctx.scale(2, 2);
+    
+    const particles = [];
+    const numParticles = 150;
+    const centerX = width / 4;
+    const centerY = height / 4;
+    const radius = Math.min(width, height) / 5;
+    
+    // Create particles in sphere distribution
+    for (let i = 0; i < numParticles; i++) {
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos((Math.random() * 2) - 1);
-      const radius = 2 + Math.random() * 0.5;
-      
-      positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-      positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-      positions[i * 3 + 2] = radius * Math.cos(phi);
-      
-      // Cyan to purple gradient
-      const t = Math.random();
-      colors[i * 3] = t * 0.74; // R
-      colors[i * 3 + 1] = 1 - t * 0.06; // G
-      colors[i * 3 + 2] = 1; // B
+      particles.push({
+        theta,
+        phi,
+        speed: 0.002 + Math.random() * 0.003,
+        size: 1 + Math.random() * 2,
+        alpha: 0.3 + Math.random() * 0.7
+      });
     }
     
-    return { positions, colors };
-  }, [count]);
-
-  useFrame((state) => {
-    if (ref.current) {
-      ref.current.rotation.y += 0.001;
-      ref.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.2) * 0.1;
-    }
-  });
-
-  return (
-    <Points ref={ref} positions={particles.positions} colors={particles.colors}>
-      <PointMaterial
-        transparent
-        vertexColors
-        size={0.03}
-        sizeAttenuation={true}
-        depthWrite={false}
-        blending={THREE.AdditiveBlending}
-      />
-    </Points>
-  );
-}
-
-// Data Streams - flowing lines
-function DataStreams({ count = 50 }) {
-  const linesRef = useRef([]);
-  
-  const streams = useMemo(() => {
-    const lines = [];
-    for (let i = 0; i < count; i++) {
-      const points = [];
-      const startTheta = Math.random() * Math.PI * 2;
-      const startPhi = Math.random() * Math.PI;
+    // Animation
+    let animationId;
+    let rotation = 0;
+    
+    const animate = () => {
+      ctx.fillStyle = 'rgba(5, 5, 5, 0.1)';
+      ctx.fillRect(0, 0, width / 2, height / 2);
       
-      for (let j = 0; j < 20; j++) {
-        const t = j / 20;
-        const theta = startTheta + t * 0.5;
-        const phi = startPhi + t * 0.3;
-        const radius = 2.1 + Math.sin(t * Math.PI) * 0.3;
+      rotation += 0.005;
+      
+      // Draw particles
+      particles.forEach(p => {
+        const x = centerX + radius * Math.sin(p.phi) * Math.cos(p.theta + rotation);
+        const y = centerY + radius * Math.sin(p.phi) * Math.sin(p.theta + rotation) * 0.3 + radius * Math.cos(p.phi);
+        const z = Math.cos(p.theta + rotation);
         
-        points.push(new THREE.Vector3(
-          radius * Math.sin(phi) * Math.cos(theta),
-          radius * Math.sin(phi) * Math.sin(theta),
-          radius * Math.cos(phi)
-        ));
+        // Only draw if in front
+        if (z > -0.3) {
+          const alpha = p.alpha * (0.5 + z * 0.5);
+          ctx.beginPath();
+          ctx.arc(x, y, p.size * (0.5 + z * 0.5), 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(0, 240, 255, ${alpha})`;
+          ctx.fill();
+        }
+      });
+      
+      // Draw rings
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.2)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.ellipse(centerX, centerY, radius * 1.2, radius * 0.4, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      
+      ctx.strokeStyle = 'rgba(189, 0, 255, 0.15)';
+      ctx.beginPath();
+      ctx.ellipse(centerX, centerY, radius * 1.4, radius * 0.5, 0.2, 0, Math.PI * 2);
+      ctx.stroke();
+      
+      // Draw connection lines
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.05)';
+      ctx.lineWidth = 0.5;
+      for (let i = 0; i < particles.length - 1; i += 3) {
+        const p1 = particles[i];
+        const p2 = particles[i + 1];
+        const x1 = centerX + radius * Math.sin(p1.phi) * Math.cos(p1.theta + rotation);
+        const y1 = centerY + radius * Math.sin(p1.phi) * Math.sin(p1.theta + rotation) * 0.3 + radius * Math.cos(p1.phi);
+        const x2 = centerX + radius * Math.sin(p2.phi) * Math.cos(p2.theta + rotation);
+        const y2 = centerY + radius * Math.sin(p2.phi) * Math.sin(p2.theta + rotation) * 0.3 + radius * Math.cos(p2.phi);
+        
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
       }
       
-      lines.push(points);
-    }
-    return lines;
-  }, [count]);
-
-  return (
-    <group>
-      {streams.map((points, i) => (
-        <line key={i}>
-          <bufferGeometry>
-            <bufferAttribute
-              attach="attributes-position"
-              count={points.length}
-              array={new Float32Array(points.flatMap(p => [p.x, p.y, p.z]))}
-              itemSize={3}
-            />
-          </bufferGeometry>
-          <lineBasicMaterial
-            color="#00F0FF"
-            transparent
-            opacity={0.2}
-            blending={THREE.AdditiveBlending}
-          />
-        </line>
-      ))}
-    </group>
-  );
-}
-
-// Rotating Ring
-function CyberRing({ radius = 2.5, color = "#00F0FF" }) {
-  const ref = useRef();
+      // Alert pulses if enabled
+      if (showAlerts) {
+        const pulseSize = 5 + Math.sin(Date.now() * 0.005) * 3;
+        const pulseAlpha = 0.5 + Math.sin(Date.now() * 0.005) * 0.3;
+        
+        // Random alert positions
+        [[0.3, 0.4], [0.7, 0.6], [0.5, 0.3], [0.4, 0.7]].forEach(([px, py], i) => {
+          ctx.beginPath();
+          ctx.arc(width / 4 * px + centerX * 0.5, height / 4 * py, pulseSize, 0, Math.PI * 2);
+          ctx.fillStyle = i % 2 === 0 ? `rgba(255, 0, 60, ${pulseAlpha})` : `rgba(250, 255, 0, ${pulseAlpha})`;
+          ctx.fill();
+        });
+      }
+      
+      animationId = requestAnimationFrame(animate);
+    };
+    
+    animate();
+    
+    return () => cancelAnimationFrame(animationId);
+  }, [showAlerts]);
   
-  useFrame((state) => {
-    if (ref.current) {
-      ref.current.rotation.z += 0.002;
-      ref.current.rotation.x = Math.PI / 2 + Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
-    }
-  });
-
   return (
-    <mesh ref={ref}>
-      <torusGeometry args={[radius, 0.01, 16, 100]} />
-      <meshBasicMaterial color={color} transparent opacity={0.6} />
-    </mesh>
+    <canvas 
+      ref={canvasRef} 
+      className="w-full h-full"
+      style={{ background: 'transparent' }}
+    />
   );
 }
 
-// Alert Pulses
-function AlertPulse({ position = [0, 0, 0], color = "#FF003C" }) {
-  const ref = useRef();
-  
-  useFrame((state) => {
-    if (ref.current) {
-      const scale = 1 + Math.sin(state.clock.elapsedTime * 3) * 0.1;
-      ref.current.scale.setScalar(scale);
-      ref.current.material.opacity = 0.3 + Math.sin(state.clock.elapsedTime * 3) * 0.2;
-    }
-  });
-
-  return (
-    <mesh ref={ref} position={position}>
-      <sphereGeometry args={[0.08, 16, 16]} />
-      <meshBasicMaterial color={color} transparent opacity={0.5} />
-    </mesh>
-  );
-}
-
-// Main Globe Component
-export default function CyberGlobe({ showAlerts = false }) {
-  const alertPositions = useMemo(() => {
-    const positions = [];
-    for (let i = 0; i < 8; i++) {
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos((Math.random() * 2) - 1);
-      const radius = 2.2;
-      positions.push([
-        radius * Math.sin(phi) * Math.cos(theta),
-        radius * Math.sin(phi) * Math.sin(theta),
-        radius * Math.cos(phi)
-      ]);
-    }
-    return positions;
-  }, []);
-
-  return (
-    <div className="w-full h-full" style={{ background: 'transparent' }}>
-      <Canvas
-        camera={{ position: [0, 0, 5], fov: 60 }}
-        style={{ background: 'transparent' }}
-        gl={{ alpha: true, antialias: true }}
-      >
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} intensity={1} />
-        
-        <ParticleNetwork count={3000} />
-        <DataStreams count={30} />
-        <CyberRing radius={2.5} color="#00F0FF" />
-        <CyberRing radius={2.7} color="#BD00FF" />
-        
-        {showAlerts && alertPositions.map((pos, i) => (
-          <AlertPulse key={i} position={pos} color={i % 2 === 0 ? "#FF003C" : "#FAFF00"} />
-        ))}
-        
-        <OrbitControls 
-          enableZoom={false} 
-          enablePan={false}
-          autoRotate
-          autoRotateSpeed={0.5}
-          minPolarAngle={Math.PI / 3}
-          maxPolarAngle={Math.PI / 1.5}
-        />
-      </Canvas>
-    </div>
-  );
-}
-
-// Smaller version for cards
+// Mini version for cards
 export function MiniGlobe() {
-  return (
-    <div className="w-full h-full" style={{ background: 'transparent' }}>
-      <Canvas
-        camera={{ position: [0, 0, 4], fov: 50 }}
-        style={{ background: 'transparent' }}
-        gl={{ alpha: true }}
-      >
-        <ParticleNetwork count={1000} />
-        <CyberRing radius={1.8} color="#00F0FF" />
-        <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={1} />
-      </Canvas>
-    </div>
-  );
+  return <CyberGlobe showAlerts={false} />;
 }
