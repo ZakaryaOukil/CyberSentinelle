@@ -672,8 +672,8 @@ const ModelPage = () => {
     { name: 'F1-Score', RF: (rfMetrics.f1_score || 0) * 100, DT: (dtMetrics.f1_score || 0) * 100 }
   ];
 
-  const rocData = rfMetrics.roc_curve ? rfMetrics.roc_curve.fpr.map((fpr, i) => ({
-    fpr, tpr: rfMetrics.roc_curve.tpr[i]
+  const rocData = rfMetrics.roc_data ? rfMetrics.roc_data.fpr.map((fpr, i) => ({
+    fpr, tpr: rfMetrics.roc_data.tpr[i]
   })) : [];
 
   const featureImportance = rfMetrics.feature_importance ? 
