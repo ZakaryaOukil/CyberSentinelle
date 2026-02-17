@@ -1242,8 +1242,8 @@ function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-[#030303] text-white overflow-x-hidden">
-        {/* Animated background */}
-        <ParticleBackground />
+        {/* Matrix Rain background */}
+        <MatrixRain opacity={0.04} />
         
         {/* Grid overlay */}
         <div className="fixed inset-0 cyber-grid-bg pointer-events-none z-0" />
