@@ -1007,8 +1007,22 @@ const PredictionPage = () => {
 // Clustering Page
 const ClusteringPage = () => {
   const [results, setResults] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [numClusters, setNumClusters] = useState(5);
+
+  // Auto-load clustering results on mount
+  useEffect(() => {
+    const fetchResults = async () => {
+      try {
+        const response = await axios.get(`${API}/clustering/results`);
+        setResults(response.data);
+      } catch (error) {
+        console.error("Erreur:", error);
+      }
+      setLoading(false);
+    };
+    fetchResults();
+  }, []);
 
   const runClustering = async () => {
     setLoading(true);
