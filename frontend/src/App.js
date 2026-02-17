@@ -36,6 +36,7 @@ import HexGrid from "./components/HexGrid";
 // Import 3D components
 import NetworkTopology3D from "./components/NetworkTopology3D";
 import ThreatVisualization3D from "./components/ThreatVisualization3D";
+import RadarScanner from "./components/RadarScanner";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
