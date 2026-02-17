@@ -555,9 +555,9 @@ const DashboardPage = () => {
       >
         <CyberBorder glowColor="cyan" className="bg-black/50 p-6">
           <h3 className="font-mono text-lg tracking-wider mb-1 text-cyan-400">TOPOLOGIE RÉSEAU 3D</h3>
-          <p className="text-xs text-gray-500 mb-2">Modèle interactif du réseau • Faites glisser pour tourner</p>
-          <div className="h-[400px]">
-              <NetworkTopology3D />
+          <p className="text-xs text-gray-500 mb-2">Modèle interactif du réseau - 17 noeuds, 16 connexions</p>
+          <div className="h-[500px] relative">
+            <NetworkTopology3D />
           </div>
           <div className="flex items-center gap-6 mt-4 text-xs font-mono">
             <div className="flex items-center gap-2"><div className="w-3 h-3 bg-cyan-400" /><span className="text-gray-400">Serveur</span></div>
