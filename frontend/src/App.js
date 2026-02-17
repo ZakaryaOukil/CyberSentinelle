@@ -752,8 +752,8 @@ const ModelPage = () => {
       >
         <CyberBorder glowColor="red" className="bg-black/50 p-6">
           <h3 className="font-mono text-lg tracking-wider mb-1 text-red-400">VISUALISATION 3D DES MENACES</h3>
-          <p className="text-xs text-gray-500 mb-2">Bouclier IDS • Trafic normal (vert) vs Attaques (rouge)</p>
-          <div className="h-[400px]">
+          <p className="text-xs text-gray-500 mb-2">Bouclier IDS - Trafic normal (vert) vs Attaques (rouge) - 200 particules</p>
+          <div className="h-[500px] relative">
               <ThreatVisualization3D />
           </div>
           <div className="flex items-center gap-6 mt-3 text-xs font-mono">
