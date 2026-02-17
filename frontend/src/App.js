@@ -747,7 +747,7 @@ const ModelPage = () => {
         >
           <CyberBorder glowColor="green" className="bg-black/50 p-6">
             <h3 className="font-mono text-lg tracking-wider mb-1 text-green-400">COURBE ROC</h3>
-            <p className="text-xs text-gray-500 mb-4">AUC = {(rfMetrics.auc || 0).toFixed(4)}</p>
+            <p className="text-xs text-gray-500 mb-4">AUC = {(rfMetrics.roc_data?.auc || 0).toFixed(4)}</p>
             <div className="h-56">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={rocData}>
