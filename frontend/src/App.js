@@ -30,8 +30,8 @@ import HomePage from "./pages/Home";
 import LiveMonitorPage from "./pages/Monitor";
 
 // Import 3D components
-const NetworkTopology3D = React.lazy(() => import("./components/NetworkTopology3D"));
-const ThreatVisualization3D = React.lazy(() => import("./components/ThreatVisualization3D"));
+import NetworkTopology3D from "./components/NetworkTopology3D";
+import ThreatVisualization3D from "./components/ThreatVisualization3D";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
