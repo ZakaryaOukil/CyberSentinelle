@@ -749,9 +749,7 @@ const ModelPage = () => {
           <h3 className="font-mono text-lg tracking-wider mb-1 text-red-400">VISUALISATION 3D DES MENACES</h3>
           <p className="text-xs text-gray-500 mb-2">Bouclier IDS • Trafic normal (vert) vs Attaques (rouge)</p>
           <div className="h-[400px]">
-            <Suspense fallback={<div className="flex items-center justify-center h-full"><p className="text-red-500/50 font-mono text-sm animate-pulse">CHARGEMENT 3D...</p></div>}>
               <ThreatVisualization3D />
-            </Suspense>
           </div>
           <div className="flex items-center gap-6 mt-3 text-xs font-mono">
             <div className="flex items-center gap-2"><div className="w-3 h-3 bg-cyan-400 rounded-full" /><span className="text-gray-400">Bouclier IDS</span></div>
