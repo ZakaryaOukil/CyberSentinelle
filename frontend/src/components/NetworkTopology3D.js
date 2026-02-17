@@ -6,7 +6,7 @@ import * as THREE from 'three';
 function NetworkNode({ position, type = 'client' }) {
   const ref = useRef();
   const colors = { server: '#00F0FF', client: '#00FF41', attacker: '#FF003C', firewall: '#FAFF00' };
-  const c = colors[type] || '#00F0FF';
+  const c = colors[type];
 
   useFrame((state) => {
     if (ref.current) {
@@ -26,21 +26,30 @@ function NetworkNode({ position, type = 'client' }) {
   );
 }
 
-function Connection({ start, end, color = '#00F0FF' }) {
-  const ref = useRef();
-  const dotRef = useRef();
-  const progress = useRef(Math.random());
+function ConnectionLine({ start, end, color }) {
+  const lineRef = useRef();
+  
+  const lineObj = useMemo(() => {
+    const geometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(...start),
+      new THREE.Vector3(...end)
+    ]);
+    const material = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.2 });
+    return new THREE.Line(geometry, material);
+  }, [start, end, color]);
 
-  const geometry = useMemo(() => {
-    const points = [new THREE.Vector3(...start), new THREE.Vector3(...end)];
-    return new THREE.BufferGeometry().setFromPoints(points);
-  }, [start, end]);
+  return <primitive object={lineObj} />;
+}
+
+function DataDot({ start, end, color }) {
+  const ref = useRef();
+  const progress = useRef(Math.random());
 
   useFrame((_, delta) => {
     progress.current = (progress.current + delta * 0.4) % 1;
-    if (dotRef.current) {
+    if (ref.current) {
       const t = progress.current;
-      dotRef.current.position.set(
+      ref.current.position.set(
         start[0] + (end[0] - start[0]) * t,
         start[1] + (end[1] - start[1]) * t + Math.sin(t * Math.PI) * 0.2,
         start[2] + (end[2] - start[2]) * t
@@ -49,15 +58,10 @@ function Connection({ start, end, color = '#00F0FF' }) {
   });
 
   return (
-    <>
-      <line geometry={geometry}>
-        <lineBasicMaterial color={color} transparent opacity={0.15} />
-      </line>
-      <mesh ref={dotRef}>
-        <sphereGeometry args={[0.04, 8, 8]} />
-        <meshBasicMaterial color={color} />
-      </mesh>
-    </>
+    <mesh ref={ref}>
+      <sphereGeometry args={[0.04, 8, 8]} />
+      <meshBasicMaterial color={color} />
+    </mesh>
   );
 }
 
@@ -110,7 +114,12 @@ function Scene() {
       <pointLight position={[0, 5, 5]} intensity={1} color="#00F0FF" />
       <pointLight position={[-5, 3, -5]} intensity={0.5} color="#FF003C" />
       {nodes.map((n, i) => <NetworkNode key={i} position={n.pos} type={n.type} />)}
-      {connections.map((c, i) => <Connection key={i} start={nodes[c.from].pos} end={nodes[c.to].pos} color={c.color} />)}
+      {connections.map((c, i) => (
+        <React.Fragment key={i}>
+          <ConnectionLine start={nodes[c.from].pos} end={nodes[c.to].pos} color={c.color} />
+          <DataDot start={nodes[c.from].pos} end={nodes[c.to].pos} color={c.color} />
+        </React.Fragment>
+      ))}
       <ParticleField />
       <gridHelper args={[20, 20, '#00F0FF', '#0a2a2a']} position={[0, -2.5, 0]} />
       <OrbitControls enableZoom={true} enablePan={false} autoRotate autoRotateSpeed={0.5} maxPolarAngle={Math.PI / 1.5} minPolarAngle={Math.PI / 4} />
