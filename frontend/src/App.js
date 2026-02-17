@@ -1164,7 +1164,7 @@ const ClusteringPage = () => {
         </div>
       )}
 
-      {!results && (
+      {!loading && !results && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
