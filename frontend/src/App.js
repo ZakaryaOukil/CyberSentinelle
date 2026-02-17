@@ -817,7 +817,7 @@ const PredictionPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post(`${API}/model/predict`, formData);
+      const response = await axios.post(`${API}/model/predict`, { features: formData });
       setResult(response.data);
       const isAttack = response.data.prediction === 'Attack';
       toast[isAttack ? 'error' : 'success'](isAttack ? 'Intrusion détectée!' : 'Trafic normal');
