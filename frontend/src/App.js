@@ -1114,7 +1114,7 @@ const ClusteringPage = () => {
                 </div>
                 <div className="p-4 border border-cyan-500/30 bg-cyan-500/5">
                   <p className="text-[10px] text-gray-500 tracking-widest mb-1">INERTIE</p>
-                  <p className="text-2xl font-mono font-bold text-cyan-400">{(results.inertia || 0).toFixed(0)}</p>
+                  <p className="text-2xl font-mono font-bold text-cyan-400">{results.n_clusters || 0}</p>
                 </div>
               </div>
             </CyberBorder>
