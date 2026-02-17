@@ -711,7 +711,7 @@ const ModelPage = () => {
         <StatCard icon={CheckCircle} label="ACCURACY (RF)" value={`${((rfMetrics.accuracy || 0) * 100).toFixed(2)}%`} color="primary" delay={0.1} />
         <StatCard icon={Target} label="PRECISION (RF)" value={`${((rfMetrics.precision || 0) * 100).toFixed(2)}%`} color="secondary" delay={0.2} />
         <StatCard icon={Eye} label="RECALL (RF)" value={`${((rfMetrics.recall || 0) * 100).toFixed(2)}%`} color="warning" delay={0.3} />
-        <StatCard icon={Activity} label="AUC (RF)" value={(rfMetrics.auc || 0).toFixed(4)} color="success" delay={0.4} />
+        <StatCard icon={Activity} label="AUC (RF)" value={(rfMetrics.roc_data?.auc || 0).toFixed(4)} color="success" delay={0.4} />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
