@@ -481,8 +481,13 @@ const DashboardPage = () => {
   if (loading) return <LoadingSpinner />;
   if (!data) return <div className="text-center text-gray-500">Aucune donnée disponible</div>;
 
-  const attackDistribution = data.attack_distribution || [];
-  const protocolDistribution = data.protocol_distribution || [];
+  // Transform API data into chart-ready format
+  const labelDist = data.feature_distributions?.label || {};
+  const attackDistribution = Object.entries(labelDist).map(([type, count]) => ({ type, count }));
+  
+  const protocolDist = data.feature_distributions?.protocol_type || {};
+  const protocolDistribution = Object.entries(protocolDist).map(([protocol, count]) => ({ protocol, count }));
+  
   const topFeatures = data.top_features || [];
 
   const attackChartContent = (
