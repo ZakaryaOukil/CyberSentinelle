@@ -56,9 +56,7 @@ export default function HomePage() {
       <section className="relative min-h-[80vh] flex items-center">
         {/* 3D Globe Background */}
         <div className="absolute inset-0 opacity-60">
-          <Suspense fallback={<div className="w-full h-full bg-gradient-to-b from-transparent to-black/50" />}>
-            <CyberGlobe showAlerts={true} />
-          </Suspense>
+          <CyberGlobe showAlerts={true} />
         </div>
         
         {/* Content */}
