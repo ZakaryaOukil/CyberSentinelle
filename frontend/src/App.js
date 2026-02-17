@@ -1079,7 +1079,9 @@ const ClusteringPage = () => {
         </div>
       </motion.div>
 
-      {results && (
+      {loading && <LoadingSpinner />}
+
+      {!loading && results && (
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Scatter Plot */}
           <motion.div
