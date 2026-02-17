@@ -1023,7 +1023,7 @@ const ClusteringPage = () => {
     setLoading(false);
   };
 
-  const scatterData = results?.visualization_data || [];
+  const scatterData = results?.pca_data || [];
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
