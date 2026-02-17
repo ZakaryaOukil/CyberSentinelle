@@ -1,11 +1,9 @@
-import React, { Suspense, lazy } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Shield, ChevronRight, Terminal, Cpu, Activity, Download, Zap, Globe } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
-
-// Lazy load the 3D globe
-const CyberGlobe = lazy(() => import('../components/CyberGlobe'));
+import CyberGlobe from '../components/CyberGlobe';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
