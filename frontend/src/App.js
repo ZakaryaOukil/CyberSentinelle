@@ -29,6 +29,10 @@ import "@/App.css";
 import HomePage from "./pages/Home";
 import LiveMonitorPage from "./pages/Monitor";
 
+// Import 3D & effect components
+import MatrixRain from "./components/MatrixRain";
+import HexGrid from "./components/HexGrid";
+
 // Import 3D components
 import NetworkTopology3D from "./components/NetworkTopology3D";
 import ThreatVisualization3D from "./components/ThreatVisualization3D";
