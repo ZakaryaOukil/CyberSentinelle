@@ -1,164 +1,171 @@
 {
-  "project_name": "CyberSentinelle - Network Intrusion Detection System",
+  "project_name": "CyberSentinelle",
   "design_philosophy": {
-    "archetype": "Tactical Cyber-Sec (Electric & Neon + Swiss High-Contrast)",
-    "vibe": "Elite, Analytical, Defensive, Kinetic",
-    "core_principles": [
-      "Data Density over Decoration",
-      "Neon signals status, Darkness signals depth",
-      "Motion implies activity (live monitoring)",
-      "Academic Rigor (Clear labels, no chart junk)"
-    ]
+    "identity": "The Watchful Guardian",
+    "core_values": [
+      "Visibility into the Invisible",
+      "Real-time Threat Detection",
+      "Pattern Recognition",
+      "Tactical Precision"
+    ],
+    "aesthetic": "Cyber-Tactical / Retro-Futurism",
+    "tone": "Professional, Intimidating, Data-Driven, High-Contrast"
   },
   "typography": {
-    "font_family": {
-      "headings": "JetBrains Mono, monospace",
-      "body": "Plus Jakarta Sans, sans-serif",
-      "mono": "JetBrains Mono, monospace"
+    "primary_font": {
+      "name": "Rajdhani",
+      "usage": "Body, UI Elements, Navigation",
+      "weights": ["300", "500", "700"],
+      "import_url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;500;700&display=swap"
     },
-    "scaling": {
-      "h1": "text-4xl md:text-5xl font-bold tracking-tight",
-      "h2": "text-3xl font-semibold tracking-tight",
-      "h3": "text-2xl font-medium",
-      "body": "text-base leading-relaxed text-muted-foreground",
-      "caption": "text-xs font-mono uppercase tracking-widest text-muted-foreground/70"
-    }
+    "secondary_font": {
+      "name": "Share Tech Mono",
+      "usage": "Headings, Data Displays, Terminal Logs, Charts",
+      "weights": ["400"],
+      "import_url": "https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap"
+    },
+    "code_font": {
+      "name": "JetBrains Mono",
+      "usage": "Code Snippets, Raw Data",
+      "weights": ["400"],
+      "import_url": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap"
+    },
+    "rules": [
+      "Headings (h1-h3) MUST use 'Share Tech Mono'.",
+      "Body text MUST use 'Rajdhani'.",
+      "Uppercase labels MUST have 'tracking-widest'.",
+      "Data values (numbers) MUST use 'Share Tech Mono' or 'JetBrains Mono' for alignment."
+    ]
   },
   "colors": {
-    "background": {
-      "default": "#020617",
-      "paper": "#0f172a",
-      "subtle": "#1e293b"
+    "palette": {
+      "background": {
+        "DEFAULT": "#050505",
+        "secondary": "#0A0A0A",
+        "card": "rgba(10, 10, 10, 0.6)"
+      },
+      "primary": {
+        "DEFAULT": "#00F0FF",
+        "glow": "rgba(0, 240, 255, 0.5)",
+        "dim": "#008F99"
+      },
+      "secondary": {
+        "DEFAULT": "#FF003C",
+        "glow": "rgba(255, 0, 60, 0.5)",
+        "dim": "#990024"
+      },
+      "accent": {
+        "DEFAULT": "#FAFF00",
+        "success": "#00FF41",
+        "warning": "#FAFF00",
+        "danger": "#FF003C"
+      },
+      "text": {
+        "primary": "#E0E0E0",
+        "secondary": "#A0A0A0",
+        "muted": "#505050"
+      },
+      "border": {
+        "subtle": "rgba(255, 255, 255, 0.1)",
+        "active": "#00F0FF"
+      }
     },
-    "primary": {
-      "default": "#06b6d4",
-      "foreground": "#000000",
-      "glow": "0 0 20px rgba(6, 182, 212, 0.5)"
-    },
-    "secondary": {
-      "default": "#3b82f6",
-      "foreground": "#ffffff"
-    },
-    "accent": {
-      "danger": "#ef4444",
-      "warning": "#f59e0b",
-      "success": "#10b981",
-      "info": "#8b5cf6"
-    },
-    "border": {
-      "default": "rgba(148, 163, 184, 0.1)",
-      "active": "rgba(6, 182, 212, 0.5)"
+    "gradients": {
+      "cyber_glow": "linear-gradient(180deg, rgba(0, 240, 255, 0) 0%, rgba(0, 240, 255, 0.1) 100%)",
+      "danger_glow": "linear-gradient(180deg, rgba(255, 0, 60, 0) 0%, rgba(255, 0, 60, 0.1) 100%)"
     }
   },
-  "tailwind_config_extension": {
-    "colors": {
-      "background": "hsl(222, 47%, 11%)",
-      "foreground": "hsl(210, 40%, 98%)",
-      "card": "hsl(222, 47%, 11%)",
-      "card-foreground": "hsl(210, 40%, 98%)",
-      "popover": "hsl(222, 47%, 11%)",
-      "popover-foreground": "hsl(210, 40%, 98%)",
-      "primary": "hsl(186, 70%, 50%)",
-      "primary-foreground": "hsl(222, 47%, 11%)",
-      "secondary": "hsl(217.2, 32.6%, 17.5%)",
-      "secondary-foreground": "hsl(210, 40%, 98%)",
-      "muted": "hsl(217.2, 32.6%, 17.5%)",
-      "muted-foreground": "hsl(215, 20.2%, 65.1%)",
-      "accent": "hsl(217.2, 32.6%, 17.5%)",
-      "accent-foreground": "hsl(210, 40%, 98%)",
-      "destructive": "hsl(0, 84.2%, 60.2%)",
-      "destructive-foreground": "hsl(210, 40%, 98%)",
-      "border": "hsl(217.2, 32.6%, 17.5%)",
-      "input": "hsl(217.2, 32.6%, 17.5%)",
-      "ring": "hsl(186, 70%, 50%)"
-    },
-    "borderRadius": {
-      "lg": "0.5rem",
-      "md": "0.3rem",
-      "sm": "0.15rem"
-    },
-    "backgroundImage": {
-      "grid-pattern": "linear-gradient(to right, #1e293b 1px, transparent 1px), linear-gradient(to bottom, #1e293b 1px, transparent 1px)"
-    }
+  "visual_enhancers": {
+    "scanlines": "background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); background-size: 100% 2px, 3px 100%; pointer-events: none;",
+    "glassmorphism": "backdrop-filter: blur(12px); background: rgba(10, 10, 10, 0.6); border: 1px solid rgba(255, 255, 255, 0.08);",
+    "neon_border": "box-shadow: 0 0 5px theme('colors.primary.DEFAULT'), 0 0 10px theme('colors.primary.DEFAULT');",
+    "grid_background": "background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 40px 40px;"
   },
-  "layout_strategies": {
-    "dashboard": {
-      "type": "Bento Grid",
-      "structure": "grid grid-cols-1 md:grid-cols-12 gap-6 p-6",
-      "card_style": "bg-card/50 backdrop-blur-sm border border-border/50 hover:border-primary/50 transition-colors duration-300"
+  "layout": {
+    "grid_system": {
+      "dashboard": "grid grid-cols-1 md:grid-cols-12 gap-6",
+      "bento_spans": {
+        "hero": "col-span-12 md:col-span-8 lg:col-span-9 row-span-2",
+        "stat_card": "col-span-6 md:col-span-4 lg:col-span-3",
+        "list_vertical": "col-span-12 md:col-span-4 row-span-2"
+      }
     },
-    "marketing": {
-      "type": "Hero Centered",
-      "features": "Asymmetric Feature Grid"
+    "spacing": {
+      "container_padding": "p-6 md:p-8 lg:p-12",
+      "card_padding": "p-6",
+      "section_gap": "gap-8"
     }
   },
   "components": {
-    "Button": {
-      "variant": "outline",
-      "radius": "none",
-      "animation": "hover:bg-primary/20 hover:text-primary hover:border-primary transition-all duration-300",
-      "special": "Cyber-glitch effect on click"
+    "buttons": {
+      "primary": "rounded-none border border-primary text-primary hover:bg-primary hover:text-black transition-all duration-300 font-mono tracking-wider uppercase text-sm px-6 py-2 shadow-[0_0_10px_rgba(0,240,255,0.2)] hover:shadow-[0_0_20px_rgba(0,240,255,0.6)]",
+      "destructive": "rounded-none border border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition-all duration-300 font-mono tracking-wider uppercase text-sm px-6 py-2 shadow-[0_0_10px_rgba(255,0,60,0.2)]",
+      "ghost": "rounded-none text-gray-400 hover:text-white hover:bg-white/5 transition-colors font-mono uppercase text-xs"
     },
-    "Card": {
-      "style": "Glassmorphism",
-      "border": "1px solid rgba(255,255,255,0.05)",
-      "shadow": "0 0 0 1px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.5)"
+    "cards": {
+      "base": "rounded-none bg-zinc-900/50 backdrop-blur-md border border-white/10 hover:border-primary/50 transition-colors duration-300 relative overflow-hidden group",
+      "header": "flex justify-between items-center mb-4 border-b border-white/5 pb-2"
     },
-    "Charts": {
-      "library": "Recharts",
-      "theme": "Dark",
-      "grid": "stroke-dasharray='3 3' stroke='#334155'",
-      "tooltip": "bg-slate-900 border-slate-700 text-slate-50"
-    }
-  },
-  "visual_assets": {
-    "icons": "Lucide React (Shield, Activity, Lock, Server, Cpu, Globe, AlertTriangle)",
-    "background_effects": [
-      "Subtle animated grid background",
-      "Scanline overlay (opacity 0.02)",
-      "Radial gradient glow behind hero elements"
-    ]
-  },
-  "page_specific_guidelines": {
-    "Home": {
-      "hero": "Large typing text effect (CyberSentinelle initializing...), minimalist grid background",
-      "stats": "Rolling number counters for 'Packets Analyzed', 'Threats Blocked'"
+    "inputs": {
+      "base": "rounded-none bg-black/50 border border-white/20 focus:border-primary text-white font-mono placeholder:text-gray-600 focus:ring-1 focus:ring-primary transition-all"
     },
-    "Dashboard": {
-      "layout": "Sidebar navigation (collapsible), Main content area with Bento grid",
-      "widgets": "Real-time traffic monitor (LineChart), Attack Origin (Map or List), Threat Level (Gauge)"
-    },
-    "Model": {
-      "focus": "Confusion Matrix heatmap (Red for False Negatives), ROC Curve",
-      "interactive": "Slider to adjust Probability Threshold"
-    },
-    "Prediction": {
-      "input": "Terminal-style input form or file upload drag-drop zone with scanning animation"
+    "charts": {
+      "colors": ["#00F0FF", "#FF003C", "#FAFF00", "#00FF41", "#BD00FF"],
+      "style": "stroke-width: 2px; dot: false; grid: false;"
     }
   },
   "motion": {
-    "initial": "opacity-0 translate-y-4",
-    "animate": "opacity-100 translate-y-0",
-    "transition": "duration-500 ease-out",
-    "hover": "scale-[1.01] shadow-lg shadow-primary/10"
+    "page_transition": {
+      "initial": { "opacity": 0, "y": 20 },
+      "animate": { "opacity": 1, "y": 0 },
+      "exit": { "opacity": 0, "y": -20 },
+      "transition": { "duration": 0.4, "ease": "easeOut" }
+    },
+    "hover_effects": "hover:scale-[1.01] hover:brightness-110 active:scale-[0.99]",
+    "loading": "animate-pulse"
   },
-  "accessibility": {
-    "contrast": "Ensure neon text has sufficient contrast against dark bg (use 4.5:1 ratio)",
-    "focus": "Visible ring-2 ring-primary offset-2 offset-background"
+  "3d_strategy": {
+    "libraries": ["@react-three/fiber", "@react-three/drei"],
+    "scenes": {
+      "home_hero": "Interactive 3D Globe or Abstract Network Mesh using R3F. Representing global threat monitoring.",
+      "clustering": "3D Scatter Plot for K-Means visualization. Points represent network packets, colors represent clusters."
+    },
+    "performance": "Use 'instancedMesh' for large particle counts (clustering). Wrap in Suspense."
   },
-  "instructions_to_main_agent": [
-    "Install 'lucide-react', 'recharts', 'framer-motion', 'clsx', 'tailwind-merge' if not present.",
-    "Use 'JetBrains Mono' for all data values, code snippets, and terminal inputs.",
-    "Ensure the 'Download Notebook' button is prominent and labeled 'Télécharger le Notebook (FR)'.",
-    "Implement a 'Demo Mode' toggle that hides complex controls and focuses on visualizations.",
-    "Use 'sonner' for toast notifications (e.g., 'Model Training Complete', 'Intrusion Detected').",
-    "DO NOT use gradients for backgrounds. Use solid dark colors with subtle borders.",
-    "Add 'data-testid' to all interactive elements."
-  ],
+  "image_assets": {
+    "hero_backgrounds": [
+      {
+        "url": "https://images.unsplash.com/photo-1644673640991-f3c4a9dafe9a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHw0fHxjeWJlcnNlY3VyaXR5JTIwbmV0d29yayUyMGRpZ2l0YWwlMjBtYXAlMjBhYnN0cmFjdCUyMGRhdGElMjBkYXJrfGVufDB8fHx8MTc3MTMzNzEyNHww&ixlib=rb-4.1.0&q=85",
+        "description": "Abstract yellow digital lines on black, good for circuit/network vibes.",
+        "category": "background"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1664526937033-fe2c11f1be25?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwyfHxjeWJlcnNlY3VyaXR5JTIwbmV0d29yayUyMGRpZ2l0YWwlMjBtYXAlMjBhYnN0cmFjdCUyMGRhdGElMjBkYXJrfGVufDB8fHx8MTc3MTMzNzEyNHww&ixlib=rb-4.1.0&q=85",
+        "description": "Abstract network diagram, dark and professional.",
+        "category": "texture"
+      }
+    ],
+    "icons": {
+      "library": "lucide-react",
+      "style": "stroke-width: 1.5px; color: currentColor;"
+    }
+  },
   "universal_guidelines": [
-    "Avoid 'AI slop' aesthetics (generic centered layouts, purple/blue gradients).",
-    "Use z-index hierarchy to create depth.",
-    "Micro-animations are mandatory for all interactions.",
-    "Spacing should be generous (p-6, p-8) even in dense dashboards."
+    "ALL text content MUST be in French.",
+    "Do NOT use gradients on text. Keep text legible and high-contrast.",
+    "Do NOT use rounded corners greater than 'sm' (2px). Keep edges sharp.",
+    "Use 'data-testid' on all interactive elements.",
+    "Use 'Sonner' for notifications (install if missing).",
+    "Charts must use 'ResponsiveContainer' from Recharts.",
+    "Maintain the 'Cyber-Tactical' aesthetic: Dark, Neon, Monospace."
+  ],
+  "instructions_to_main_agent": [
+    "1. Install required fonts (Rajdhani, Share Tech Mono, JetBrains Mono) in index.css or index.html.",
+    "2. Configure tailwind.config.js with the specified colors and font families.",
+    "3. Create a layout wrapper that applies the 'scanlines' and 'grid_background' effects subtly.",
+    "4. Update existing Shadcn components to match the 'Cyber-Tactical' style (remove roundness, add borders).",
+    "5. Implement the 3D Globe on the Home page and 3D Scatter Plot on the Clustering page using R3F.",
+    "6. Ensure all existing functionality (Live Monitor, EDA, ML, Prediction) is preserved and styled.",
+    "7. Use the provided image URLs for backgrounds where appropriate."
   ]
 }
