@@ -1130,13 +1130,13 @@ const ClusteringPage = () => {
               <h3 className="font-mono text-lg tracking-wider mb-4 text-green-400">TAILLE DES CLUSTERS</h3>
               <div className="h-48">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={Object.entries(results.cluster_sizes || {}).map(([k, v]) => ({ cluster: `C${k}`, size: v }))}>
+                  <BarChart data={Object.entries(results.cluster_distribution || {}).map(([k, v]) => ({ cluster: k, size: v }))}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,255,65,0.1)" />
                     <XAxis dataKey="cluster" stroke="#505050" tick={{ fill: '#00FF41', fontSize: 10 }} />
                     <YAxis stroke="#505050" tick={{ fill: '#00FF41', fontSize: 10 }} />
                     <Tooltip contentStyle={{ backgroundColor: '#000', border: '1px solid #00FF41' }} />
                     <Bar dataKey="size" fill={COLORS.success}>
-                      {Object.keys(results.cluster_sizes || {}).map((_, idx) => (
+                      {Object.keys(results.cluster_distribution || {}).map((_, idx) => (
                         <Cell key={idx} fill={CHART_COLORS[idx % CHART_COLORS.length]} />
                       ))}
                     </Bar>
