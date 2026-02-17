@@ -1,149 +1,200 @@
-import React, { useRef, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
-import * as THREE from 'three';
-
-function AttackParticles({ count = 400 }) {
-  const meshRef = useRef();
-  const dummy = useMemo(() => new THREE.Object3D(), []);
-  const particles = useMemo(() => {
-    const p = [];
-    for (let i = 0; i < count; i++) {
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(Math.random() * 2 - 1);
-      const radius = 2 + Math.random() * 3;
-      p.push({
-        position: [radius * Math.sin(phi) * Math.cos(theta), radius * Math.sin(phi) * Math.sin(theta), radius * Math.cos(phi)],
-        speed: 0.2 + Math.random() * 0.5,
-        offset: Math.random() * Math.PI * 2,
-        scale: 0.03 + Math.random() * 0.03,
-      });
-    }
-    return p;
-  }, [count]);
-
-  useFrame((state) => {
-    if (!meshRef.current) return;
-    const t = state.clock.elapsedTime;
-    particles.forEach((p, i) => {
-      dummy.position.set(
-        p.position[0] + Math.sin(t * p.speed + p.offset) * 0.3,
-        p.position[1] + Math.cos(t * p.speed + p.offset) * 0.3,
-        p.position[2] + Math.sin(t * p.speed * 0.7 + p.offset) * 0.2
-      );
-      dummy.scale.setScalar(p.scale * (1 + Math.sin(t * 2 + p.offset) * 0.3));
-      dummy.updateMatrix();
-      meshRef.current.setMatrixAt(i, dummy.matrix);
-    });
-    meshRef.current.instanceMatrix.needsUpdate = true;
-  });
-
-  return (
-    <instancedMesh ref={meshRef} args={[null, null, count]}>
-      <sphereGeometry args={[1, 6, 6]} />
-      <meshBasicMaterial color="#FF003C" transparent opacity={0.7} />
-    </instancedMesh>
-  );
-}
-
-function NormalTrafficRing() {
-  const ref = useRef();
-  const count = 250;
-  const dummy = useMemo(() => new THREE.Object3D(), []);
-  const particles = useMemo(() => {
-    const p = [];
-    for (let i = 0; i < count; i++) {
-      p.push({ angle: (i / count) * Math.PI * 2, radius: 1.5 + Math.random() * 0.5, y: (Math.random() - 0.5) * 0.8, speed: 0.3 + Math.random() * 0.3 });
-    }
-    return p;
-  }, []);
-
-  useFrame((state) => {
-    if (!ref.current) return;
-    const t = state.clock.elapsedTime;
-    particles.forEach((p, i) => {
-      const a = p.angle + t * p.speed;
-      dummy.position.set(Math.cos(a) * p.radius, p.y + Math.sin(t + p.angle) * 0.1, Math.sin(a) * p.radius);
-      dummy.scale.setScalar(0.02);
-      dummy.updateMatrix();
-      ref.current.setMatrixAt(i, dummy.matrix);
-    });
-    ref.current.instanceMatrix.needsUpdate = true;
-  });
-
-  return (
-    <instancedMesh ref={ref} args={[null, null, count]}>
-      <sphereGeometry args={[1, 6, 6]} />
-      <meshBasicMaterial color="#00FF41" transparent opacity={0.6} />
-    </instancedMesh>
-  );
-}
-
-function CentralShield() {
-  const ref = useRef();
-  const wireRef = useRef();
-  useFrame((state) => {
-    if (ref.current) { ref.current.rotation.y = state.clock.elapsedTime * 0.3; ref.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.2) * 0.1; }
-    if (wireRef.current) wireRef.current.rotation.y = -state.clock.elapsedTime * 0.2;
-  });
-
-  return (
-    <group>
-      <mesh ref={ref}>
-        <icosahedronGeometry args={[1, 1]} />
-        <meshPhongMaterial color="#00F0FF" emissive="#00F0FF" emissiveIntensity={0.3} transparent opacity={0.15} side={THREE.DoubleSide} />
-      </mesh>
-      <mesh ref={wireRef}>
-        <icosahedronGeometry args={[1.1, 1]} />
-        <meshBasicMaterial color="#00F0FF" wireframe transparent opacity={0.3} />
-      </mesh>
-      <mesh>
-        <sphereGeometry args={[0.4, 32, 32]} />
-        <meshPhongMaterial color="#00F0FF" emissive="#00F0FF" emissiveIntensity={0.8} transparent opacity={0.6} />
-      </mesh>
-    </group>
-  );
-}
-
-function ThreatRings() {
-  const ring1 = useRef(); const ring2 = useRef(); const ring3 = useRef();
-  useFrame((state) => {
-    const t = state.clock.elapsedTime;
-    if (ring1.current) ring1.current.rotation.z = t * 0.5;
-    if (ring2.current) ring2.current.rotation.z = -t * 0.3;
-    if (ring3.current) ring3.current.rotation.x = t * 0.4;
-  });
-
-  return (
-    <>
-      <mesh ref={ring1} rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[2.5, 0.02, 8, 64]} /><meshBasicMaterial color="#FF003C" transparent opacity={0.4} /></mesh>
-      <mesh ref={ring2} rotation={[Math.PI / 3, 0, 0]}><torusGeometry args={[3, 0.015, 8, 64]} /><meshBasicMaterial color="#BD00FF" transparent opacity={0.3} /></mesh>
-      <mesh ref={ring3} rotation={[0, Math.PI / 4, 0]}><torusGeometry args={[3.5, 0.01, 8, 64]} /><meshBasicMaterial color="#FAFF00" transparent opacity={0.2} /></mesh>
-    </>
-  );
-}
-
-function Scene() {
-  return (
-    <>
-      <ambientLight intensity={0.2} />
-      <pointLight position={[5, 5, 5]} intensity={1} color="#00F0FF" />
-      <pointLight position={[-5, -3, -5]} intensity={0.5} color="#FF003C" />
-      <CentralShield />
-      <ThreatRings />
-      <AttackParticles count={350} />
-      <NormalTrafficRing />
-      <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.3} maxPolarAngle={Math.PI / 1.5} minPolarAngle={Math.PI / 3} />
-    </>
-  );
-}
+import React, { useEffect, useRef } from 'react';
 
 export default function ThreatVisualization3D() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+
+    const w = canvas.width / dpr;
+    const h = canvas.height / dpr;
+    const cx = w / 2;
+    const cy = h / 2;
+
+    // Attack particles (red, outer orbit)
+    const attackParticles = Array.from({ length: 120 }, () => {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(Math.random() * 2 - 1);
+      const r = 120 + Math.random() * 80;
+      return { theta, phi, r, speed: 0.003 + Math.random() * 0.005, size: 1.5 + Math.random() * 2 };
+    });
+
+    // Normal traffic (green, inner ring)
+    const normalParticles = Array.from({ length: 80 }, (_, i) => ({
+      angle: (i / 80) * Math.PI * 2,
+      r: 60 + Math.random() * 20,
+      speed: 0.008 + Math.random() * 0.006,
+      yOff: (Math.random() - 0.5) * 30,
+      size: 1 + Math.random() * 1.5,
+    }));
+
+    // Shield geometry (icosahedron points)
+    const shieldRadius = 45;
+    const shieldPoints = [];
+    const goldenRatio = (1 + Math.sqrt(5)) / 2;
+    const vertices = [
+      [-1, goldenRatio, 0], [1, goldenRatio, 0], [-1, -goldenRatio, 0], [1, -goldenRatio, 0],
+      [0, -1, goldenRatio], [0, 1, goldenRatio], [0, -1, -goldenRatio], [0, 1, -goldenRatio],
+      [goldenRatio, 0, -1], [goldenRatio, 0, 1], [-goldenRatio, 0, -1], [-goldenRatio, 0, 1],
+    ];
+    const len = Math.sqrt(1 + goldenRatio * goldenRatio);
+    vertices.forEach(([x, y, z]) => {
+      shieldPoints.push({ x: (x / len) * shieldRadius, y: (y / len) * shieldRadius, z: (z / len) * shieldRadius });
+    });
+
+    const edges = [
+      [0,1],[0,5],[0,7],[0,10],[0,11],[1,5],[1,7],[1,8],[1,9],
+      [2,3],[2,4],[2,6],[2,10],[2,11],[3,4],[3,6],[3,8],[3,9],
+      [4,5],[4,9],[4,11],[5,9],[5,11],[6,7],[6,8],[6,10],[7,8],[7,10],
+      [8,9],[10,11]
+    ];
+
+    // Orbiting rings
+    const rings = [
+      { r: 100, tilt: 0.5, speed: 0.004, color: '#FF003C', width: 1.5 },
+      { r: 115, tilt: 0.8, speed: -0.003, color: '#BD00FF', width: 1 },
+      { r: 130, tilt: 0.3, speed: 0.002, color: '#FAFF00', width: 0.8 },
+    ];
+
+    let time = 0;
+    let animId;
+
+    const project3D = (x, y, z, rotY, rotX = 0.3) => {
+      const cy2 = Math.cos(rotY), sy = Math.sin(rotY);
+      const cx2 = Math.cos(rotX), sx = Math.sin(rotX);
+      let rx = x * cy2 - z * sy;
+      let rz = x * sy + z * cy2;
+      let ry = y * cx2 - rz * sx;
+      rz = y * sx + rz * cx2;
+      const scale = 400 / (400 + rz);
+      return { px: cx + rx * scale, py: cy + ry * scale, scale, z: rz };
+    };
+
+    const animate = () => {
+      time += 0.016;
+      ctx.clearRect(0, 0, w, h);
+
+      const rotY = time * 0.3;
+      const rotX = 0.3 + Math.sin(time * 0.15) * 0.1;
+
+      // Shield wireframe
+      ctx.strokeStyle = '#00F0FF30';
+      ctx.lineWidth = 0.5;
+      edges.forEach(([a, b]) => {
+        const pa = project3D(shieldPoints[a].x, shieldPoints[a].y, shieldPoints[a].z, rotY, rotX);
+        const pb = project3D(shieldPoints[b].x, shieldPoints[b].y, shieldPoints[b].z, rotY, rotX);
+        ctx.beginPath();
+        ctx.moveTo(pa.px, pa.py);
+        ctx.lineTo(pb.px, pb.py);
+        ctx.stroke();
+      });
+
+      // Shield vertices glow
+      shieldPoints.forEach((p) => {
+        const proj = project3D(p.x, p.y, p.z, rotY, rotX);
+        if (proj.z > -30) {
+          ctx.beginPath();
+          ctx.arc(proj.px, proj.py, 2 * proj.scale, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(0, 240, 255, ${0.5 * proj.scale})`;
+          ctx.fill();
+        }
+      });
+
+      // Central core glow
+      const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, 50);
+      gradient.addColorStop(0, 'rgba(0, 240, 255, 0.3)');
+      gradient.addColorStop(0.5, 'rgba(0, 240, 255, 0.08)');
+      gradient.addColorStop(1, 'transparent');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(cx - 50, cy - 50, 100, 100);
+
+      // Pulsing core
+      const pulseR = 15 + Math.sin(time * 3) * 3;
+      ctx.beginPath();
+      ctx.arc(cx, cy, pulseR, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0, 240, 255, ${0.4 + Math.sin(time * 3) * 0.15})`;
+      ctx.fill();
+
+      // Orbiting rings
+      rings.forEach((ring) => {
+        ctx.strokeStyle = ring.color + '40';
+        ctx.lineWidth = ring.width;
+        ctx.beginPath();
+        const steps = 60;
+        for (let i = 0; i <= steps; i++) {
+          const a = (i / steps) * Math.PI * 2;
+          const px3d = Math.cos(a) * ring.r;
+          const py3d = Math.sin(a) * ring.r * ring.tilt;
+          const pz3d = Math.sin(a) * ring.r * (1 - ring.tilt);
+          const proj = project3D(px3d, py3d, pz3d, rotY + time * ring.speed, rotX);
+          if (i === 0) ctx.moveTo(proj.px, proj.py);
+          else ctx.lineTo(proj.px, proj.py);
+        }
+        ctx.stroke();
+      });
+
+      // Normal traffic (green)
+      normalParticles.forEach((p) => {
+        const a = p.angle + time * p.speed;
+        const px3d = Math.cos(a) * p.r;
+        const py3d = p.yOff + Math.sin(time + p.angle) * 5;
+        const pz3d = Math.sin(a) * p.r;
+        const proj = project3D(px3d, py3d, pz3d, rotY, rotX);
+        if (proj.z > -50) {
+          ctx.beginPath();
+          ctx.arc(proj.px, proj.py, p.size * proj.scale, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(0, 255, 65, ${0.6 * proj.scale})`;
+          ctx.fill();
+        }
+      });
+
+      // Attack particles (red)
+      attackParticles.forEach((p) => {
+        const a = p.theta + time * p.speed;
+        const px3d = p.r * Math.sin(p.phi) * Math.cos(a);
+        const py3d = p.r * Math.sin(p.phi) * Math.sin(a);
+        const pz3d = p.r * Math.cos(p.phi);
+        const proj = project3D(px3d, py3d, pz3d, rotY * 0.5, rotX);
+        if (proj.z > -60) {
+          ctx.beginPath();
+          ctx.arc(proj.px, proj.py, p.size * proj.scale, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 0, 60, ${0.5 * proj.scale})`;
+          ctx.shadowColor = '#FF003C';
+          ctx.shadowBlur = 4;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+      });
+
+      // Scan line
+      const scanY = cy + Math.sin(time * 1.5) * 80;
+      const scanGrad = ctx.createLinearGradient(cx - 120, scanY, cx + 120, scanY);
+      scanGrad.addColorStop(0, 'transparent');
+      scanGrad.addColorStop(0.5, 'rgba(0, 240, 255, 0.1)');
+      scanGrad.addColorStop(1, 'transparent');
+      ctx.fillStyle = scanGrad;
+      ctx.fillRect(cx - 120, scanY - 1, 240, 2);
+
+      animId = requestAnimationFrame(animate);
+    };
+
+    animate();
+    return () => cancelAnimationFrame(animId);
+  }, []);
+
   return (
-    <div className="w-full h-full" style={{ minHeight: '400px' }}>
-      <Canvas camera={{ position: [0, 2, 6], fov: 50 }} style={{ background: 'transparent' }} gl={{ antialias: true, alpha: true }}>
-        <Scene />
-      </Canvas>
-    </div>
+    <canvas
+      ref={canvasRef}
+      className="w-full h-full"
+      style={{ background: 'transparent', minHeight: '400px' }}
+    />
   );
 }
