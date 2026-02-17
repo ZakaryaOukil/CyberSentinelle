@@ -552,9 +552,7 @@ const DashboardPage = () => {
           <h3 className="font-mono text-lg tracking-wider mb-1 text-cyan-400">TOPOLOGIE RÉSEAU 3D</h3>
           <p className="text-xs text-gray-500 mb-2">Modèle interactif du réseau • Faites glisser pour tourner</p>
           <div className="h-[400px]">
-            <Suspense fallback={<div className="flex items-center justify-center h-full"><p className="text-cyan-500/50 font-mono text-sm animate-pulse">CHARGEMENT 3D...</p></div>}>
               <NetworkTopology3D />
-            </Suspense>
           </div>
           <div className="flex items-center gap-6 mt-4 text-xs font-mono">
             <div className="flex items-center gap-2"><div className="w-3 h-3 bg-cyan-400" /><span className="text-gray-400">Serveur</span></div>
