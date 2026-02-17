@@ -979,9 +979,9 @@ const PredictionPage = () => {
                     <p className={`text-3xl font-mono font-bold mb-2 ${result.prediction === 'Attack' ? 'neon-red' : 'neon-green'}`}>
                       {result.prediction === 'Attack' ? 'INTRUSION' : 'NORMAL'}
                     </p>
-                    <p className="text-gray-500 text-sm font-mono">Confiance: {(result.confidence * 100).toFixed(1)}%</p>
-                    {result.attack_type && (
-                      <Badge className="mt-3 bg-red-500/20 text-red-400 border-red-500/30">{result.attack_type}</Badge>
+                    <p className="text-gray-500 text-sm font-mono">Confiance: {((result.prediction === 'Attack' ? result.probability?.attack : result.probability?.normal) * 100).toFixed(1)}%</p>
+                    {result.attack_category && result.attack_category !== 'Normal' && (
+                      <Badge className="mt-3 bg-red-500/20 text-red-400 border-red-500/30">{result.attack_category}</Badge>
                     )}
                   </motion.div>
                 ) : (
