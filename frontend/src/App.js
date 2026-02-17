@@ -992,15 +992,24 @@ const PredictionPage = () => {
           </CyberBorder>
         </motion.div>
 
-        {/* Result */}
+        {/* Result + Radar */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
+          className="space-y-4"
         >
+          {/* Radar Scanner */}
+          <CyberBorder glowColor={result ? (result.prediction === 'Attack' ? 'red' : 'green') : 'cyan'} className="bg-black/50 p-4">
+            <h3 className="font-mono text-xs tracking-widest mb-2 text-gray-500 text-center">SCANNER RÉSEAU</h3>
+            <div className="h-[200px]">
+              <RadarScanner isScanning={loading} result={result} />
+            </div>
+          </CyberBorder>
+
           <CyberBorder 
             glowColor={result ? (result.prediction === 'Attack' ? 'red' : 'green') : 'cyan'} 
-            className="bg-black/50 p-6 h-full"
+            className="bg-black/50 p-6"
           >
             <h3 className="font-mono text-lg tracking-wider mb-6 text-center">RÉSULTAT</h3>
             <div className="flex flex-col items-center justify-center min-h-[200px]">
