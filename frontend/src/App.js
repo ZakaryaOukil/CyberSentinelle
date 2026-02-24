@@ -1124,6 +1124,7 @@ const PredictionPage = () => {
 
 // Clustering Page
 const ClusteringPage = () => {
+  const isLight = useTheme();
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [numClusters, setNumClusters] = useState(5);
