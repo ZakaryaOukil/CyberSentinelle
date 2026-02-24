@@ -1384,6 +1384,7 @@ function App() {
           </div>
         } />
       </Routes>
+      </ThemeContext.Provider>
     </BrowserRouter>
   );
 }
