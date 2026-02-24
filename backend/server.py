@@ -2289,6 +2289,629 @@ async def set_threshold(threshold: int):
     traffic_monitor["threshold_requests_per_second"] = max(10, min(500, threshold))
     return {"threshold": traffic_monitor["threshold_requests_per_second"]}
 
+# ========================
+# PRESENTATION PDF ENDPOINT
+# ========================
+@api_router.get("/presentation/download")
+async def download_presentation():
+    """Generate and download a PDF presentation"""
+    from fpdf import FPDF
+    
+    class CyberPDF(FPDF):
+        def __init__(self):
+            super().__init__('L', 'mm', 'A4')
+            self.set_auto_page_break(auto=False)
+            
+        def slide_bg(self):
+            self.set_fill_color(8, 8, 12)
+            self.rect(0, 0, 297, 210, 'F')
+            # Top accent line
+            self.set_draw_color(0, 240, 255)
+            self.set_line_width(0.8)
+            self.line(0, 0, 297, 0)
+            # Bottom accent
+            self.set_draw_color(0, 240, 255)
+            self.set_line_width(0.3)
+            self.line(20, 200, 277, 200)
+            # Corner brackets
+            self.set_draw_color(0, 240, 255)
+            self.set_line_width(0.4)
+            # top-left
+            self.line(15, 10, 15, 20)
+            self.line(15, 10, 25, 10)
+            # top-right
+            self.line(282, 10, 282, 20)
+            self.line(272, 10, 282, 10)
+            # bottom-left
+            self.line(15, 195, 15, 190)
+            self.line(15, 195, 25, 195)
+            # bottom-right
+            self.line(282, 195, 282, 190)
+            self.line(272, 195, 282, 195)
+        
+        def slide_number(self, num, total):
+            self.set_font('Helvetica', '', 8)
+            self.set_text_color(0, 240, 255)
+            self.set_xy(260, 202)
+            self.cell(30, 5, f'{num} / {total}', align='R')
+            
+        def footer_info(self):
+            self.set_font('Helvetica', '', 7)
+            self.set_text_color(80, 80, 80)
+            self.set_xy(20, 202)
+            self.cell(100, 5, 'CyberSentinelle | Zakarya Oukil | Master 1 Cybersecurity | HIS 2025/2026')
+    
+    pdf = CyberPDF()
+    total_slides = 15
+    
+    # ---- SLIDE 1: Title ----
+    pdf.add_page()
+    pdf.slide_bg()
+    pdf.set_font('Helvetica', 'B', 48)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_xy(30, 50)
+    pdf.cell(237, 20, 'CYBER', align='L')
+    pdf.set_font('Helvetica', 'B', 48)
+    pdf.set_text_color(0, 240, 255)
+    pdf.set_xy(30, 72)
+    pdf.cell(237, 20, 'SENTINELLE', align='L')
+    pdf.set_font('Helvetica', '', 14)
+    pdf.set_text_color(150, 150, 150)
+    pdf.set_xy(30, 100)
+    pdf.cell(237, 10, 'Network Intrusion Detection System using Machine Learning')
+    pdf.set_font('Helvetica', '', 11)
+    pdf.set_text_color(100, 100, 100)
+    pdf.set_xy(30, 120)
+    pdf.cell(237, 8, 'Zakarya Oukil')
+    pdf.set_xy(30, 128)
+    pdf.cell(237, 8, 'Master 1 Cybersecurity - HIS 2025/2026')
+    pdf.set_xy(30, 136)
+    pdf.cell(237, 8, 'NSL-KDD Dataset | Decision Tree Classifier')
+    # Decorative line
+    pdf.set_draw_color(0, 240, 255)
+    pdf.set_line_width(0.5)
+    pdf.line(30, 115, 120, 115)
+    pdf.slide_number(1, total_slides)
+    pdf.footer_info()
+    
+    # ---- SLIDE 2: Agenda ----
+    pdf.add_page()
+    pdf.slide_bg()
+    pdf.set_font('Helvetica', 'B', 28)
+    pdf.set_text_color(0, 240, 255)
+    pdf.set_xy(30, 20)
+    pdf.cell(237, 15, 'AGENDA')
+    pdf.set_draw_color(0, 240, 255)
+    pdf.line(30, 36, 80, 36)
+    agenda_items = [
+        '01  Problem Statement & Context',
+        '02  Objectives',
+        '03  Dataset: NSL-KDD',
+        '04  System Architecture',
+        '05  Exploratory Data Analysis',
+        '06  Decision Tree Model',
+        '07  Model Performance & Metrics',
+        '08  K-Means Clustering',
+        '09  Real-Time Intrusion Detection',
+        '10  DoS Attack Simulation',
+        '11  Live Demo',
+        '12  Conclusion & Future Work',
+    ]
+    pdf.set_font('Helvetica', '', 12)
+    y = 45
+    for item in agenda_items:
+        pdf.set_text_color(200, 200, 200)
+        pdf.set_xy(40, y)
+        pdf.cell(200, 8, item)
+        y += 12
+    pdf.slide_number(2, total_slides)
+    pdf.footer_info()
+    
+    # ---- SLIDE 3: Problem Statement ----
+    pdf.add_page()
+    pdf.slide_bg()
+    pdf.set_font('Helvetica', 'B', 28)
+    pdf.set_text_color(0, 240, 255)
+    pdf.set_xy(30, 20)
+    pdf.cell(237, 15, 'PROBLEM STATEMENT')
+    pdf.set_draw_color(0, 240, 255)
+    pdf.line(30, 36, 130, 36)
+    content = [
+        ('The Challenge', [
+            'Cyberattacks are increasing in frequency and sophistication',
+            'Traditional firewalls and signature-based systems are insufficient',
+            'Need for intelligent, automated threat detection',
+        ]),
+        ('Our Solution', [
+            'Machine Learning-based Network Intrusion Detection System (NIDS)',
+            'Classifies network traffic as Normal or Attack in real-time',
+            'Identifies attack categories: DoS, Probe, R2L, U2R',
+        ]),
+    ]
+    y = 45
+    for title, points in content:
+        pdf.set_font('Helvetica', 'B', 14)
+        pdf.set_text_color(255, 255, 255)
+        pdf.set_xy(35, y)
+        pdf.cell(200, 10, title)
+        y += 12
+        pdf.set_font('Helvetica', '', 11)
+        pdf.set_text_color(180, 180, 180)
+        for pt in points:
+            pdf.set_xy(42, y)
+            pdf.cell(5, 7, '>')
+            pdf.set_text_color(0, 240, 255)
+            pdf.cell(3, 7, ' ')
+            pdf.set_text_color(180, 180, 180)
+            pdf.cell(200, 7, pt)
+            y += 9
+        y += 5
+    pdf.slide_number(3, total_slides)
+    pdf.footer_info()
+    
+    # ---- SLIDE 4: Objectives ----
+    pdf.add_page()
+    pdf.slide_bg()
+    pdf.set_font('Helvetica', 'B', 28)
+    pdf.set_text_color(0, 240, 255)
+    pdf.set_xy(30, 20)
+    pdf.cell(237, 15, 'OBJECTIVES')
+    pdf.set_draw_color(0, 240, 255)
+    pdf.line(30, 36, 100, 36)
+    objectives = [
+        ('1. Data Analysis', 'Perform comprehensive EDA on the NSL-KDD dataset to understand network traffic patterns and attack distributions'),
+        ('2. Model Training', 'Train a Decision Tree classifier capable of accurately distinguishing between normal and malicious network traffic'),
+        ('3. Real-Time Detection', 'Build a real-time monitoring system that detects intrusions as they happen'),
+        ('4. Attack Simulation', 'Implement a controlled DoS attack simulation to validate the detection system'),
+        ('5. Visualization', 'Create an interactive web dashboard with 3D visualizations for intuitive security monitoring'),
+    ]
+    y = 45
+    for title, desc in objectives:
+        pdf.set_font('Helvetica', 'B', 12)
+        pdf.set_text_color(0, 240, 255)
+        pdf.set_xy(35, y)
+        pdf.cell(200, 8, title)
+        y += 9
+        pdf.set_font('Helvetica', '', 10)
+        pdf.set_text_color(160, 160, 160)
+        pdf.set_xy(42, y)
+        pdf.multi_cell(230, 6, desc)
+        y += 14
+    pdf.slide_number(4, total_slides)
+    pdf.footer_info()
+    
+    # ---- SLIDE 5: Dataset ----
+    pdf.add_page()
+    pdf.slide_bg()
+    pdf.set_font('Helvetica', 'B', 28)
+    pdf.set_text_color(0, 240, 255)
+    pdf.set_xy(30, 20)
+    pdf.cell(237, 15, 'DATASET: NSL-KDD')
+    pdf.set_draw_color(0, 240, 255)
+    pdf.line(30, 36, 130, 36)
+    
+    stats = [('125,973', 'Training Samples'), ('41', 'Features'), ('5', 'Traffic Classes'), ('2', 'Main Categories')]
+    x = 35
+    for val, label in stats:
+        pdf.set_font('Helvetica', 'B', 22)
+        pdf.set_text_color(0, 240, 255)
+        pdf.set_xy(x, 45)
+        pdf.cell(55, 12, val, align='C')
+        pdf.set_font('Helvetica', '', 9)
+        pdf.set_text_color(120, 120, 120)
+        pdf.set_xy(x, 57)
+        pdf.cell(55, 8, label, align='C')
+        x += 62
+    
+    features = [
+        ('Basic Features', 'duration, protocol_type, service, flag, src_bytes, dst_bytes'),
+        ('Content Features', 'hot, num_failed_logins, logged_in, root_shell, num_file_creations'),
+        ('Traffic Features', 'count, srv_count, serror_rate, same_srv_rate, dst_host_count'),
+        ('Attack Categories', 'Normal, DoS (neptune, smurf, land), Probe (portsweep, satan), R2L, U2R'),
+    ]
+    y = 80
+    for title, desc in features:
+        pdf.set_font('Helvetica', 'B', 11)
+        pdf.set_text_color(255, 255, 255)
+        pdf.set_xy(35, y)
+        pdf.cell(200, 8, title)
+        y += 9
+        pdf.set_font('Helvetica', '', 10)
+        pdf.set_text_color(150, 150, 150)
+        pdf.set_xy(42, y)
+        pdf.multi_cell(230, 6, desc)
+        y += 12
+    pdf.slide_number(5, total_slides)
+    pdf.footer_info()
+    
+    # ---- SLIDE 6: Architecture ----
+    pdf.add_page()
+    pdf.slide_bg()
+    pdf.set_font('Helvetica', 'B', 28)
+    pdf.set_text_color(0, 240, 255)
+    pdf.set_xy(30, 20)
+    pdf.cell(237, 15, 'SYSTEM ARCHITECTURE')
+    pdf.set_draw_color(0, 240, 255)
+    pdf.line(30, 36, 145, 36)
+    
+    layers = [
+        ('FRONTEND', 'React 19 | 3D Canvas Visualizations | Recharts', '#00F0FF'),
+        ('BACKEND', 'Python FastAPI | RESTful API | Real-Time Monitor', '#00FF41'),
+        ('ML ENGINE', 'Scikit-learn | Decision Tree | K-Means Clustering', '#BD00FF'),
+        ('DATABASE', 'MongoDB Atlas | Model Storage | Traffic Logs', '#FAFF00'),
+    ]
+    y = 50
+    for name, desc, color in layers:
+        # Box
+        r, g, b = int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16)
+        pdf.set_draw_color(r, g, b)
+        pdf.set_line_width(0.5)
+        pdf.rect(40, y, 217, 25)
+        pdf.set_fill_color(r, g, b)
+        pdf.rect(40, y, 4, 25, 'F')
+        pdf.set_font('Helvetica', 'B', 13)
+        pdf.set_text_color(r, g, b)
+        pdf.set_xy(50, y + 3)
+        pdf.cell(100, 8, name)
+        pdf.set_font('Helvetica', '', 10)
+        pdf.set_text_color(150, 150, 150)
+        pdf.set_xy(50, y + 13)
+        pdf.cell(200, 7, desc)
+        y += 33
+    
+    # Arrow
+    pdf.set_text_color(80, 80, 80)
+    pdf.set_font('Helvetica', '', 16)
+    for ay in [74, 107, 140]:
+        pdf.set_xy(145, ay)
+        pdf.cell(10, 8, 'v', align='C')
+    pdf.slide_number(6, total_slides)
+    pdf.footer_info()
+    
+    # ---- SLIDE 7: EDA ----
+    pdf.add_page()
+    pdf.slide_bg()
+    pdf.set_font('Helvetica', 'B', 28)
+    pdf.set_text_color(0, 240, 255)
+    pdf.set_xy(30, 20)
+    pdf.cell(237, 15, 'EXPLORATORY DATA ANALYSIS')
+    pdf.set_draw_color(0, 240, 255)
+    pdf.line(30, 36, 170, 36)
+    findings = [
+        'Attack Distribution: Normal traffic dominates (~53%), DoS attacks are most frequent attack type',
+        'Protocol Distribution: TCP accounts for 77% of traffic, followed by UDP and ICMP',
+        'Top Discriminating Features: srv_serror_rate, serror_rate, dst_bytes, dst_host_serror_rate, count',
+        'Feature Correlations: Strong correlation between error rate features indicates DoS attack patterns',
+        'Class Imbalance: Some attack types (R2L, U2R) have significantly fewer samples',
+        '3D Network Topology: Interactive visualization showing server, firewall, client, and attacker nodes',
+    ]
+    y = 48
+    for f in findings:
+        pdf.set_text_color(0, 240, 255)
+        pdf.set_font('Helvetica', 'B', 10)
+        pdf.set_xy(35, y)
+        pdf.cell(5, 7, '>')
+        pdf.set_text_color(200, 200, 200)
+        pdf.set_font('Helvetica', '', 10)
+        pdf.set_xy(43, y)
+        pdf.multi_cell(225, 6, f)
+        y += 18
+    pdf.set_font('Helvetica', 'I', 9)
+        pdf.set_text_color(80, 80, 80)
+    pdf.set_xy(35, 170)
+    pdf.cell(200, 7, '* See live interactive charts and 3D visualizations on the web dashboard')
+    pdf.slide_number(7, total_slides)
+    pdf.footer_info()
+    
+    # ---- SLIDE 8: Decision Tree Model ----
+    pdf.add_page()
+    pdf.slide_bg()
+    pdf.set_font('Helvetica', 'B', 28)
+    pdf.set_text_color(0, 240, 255)
+    pdf.set_xy(30, 20)
+    pdf.cell(237, 15, 'DECISION TREE MODEL')
+    pdf.set_draw_color(0, 240, 255)
+    pdf.line(30, 36, 140, 36)
+    
+    sections = [
+        ('Why Decision Tree?', [
+            'Highly interpretable - can visualize the decision process',
+            'Fast training and prediction time',
+            'Handles both numerical and categorical features naturally',
+            'No need for feature scaling',
+            'Works well with the structured NSL-KDD dataset',
+        ]),
+        ('Training Process', [
+            'Data preprocessing: Label encoding for categorical features (protocol, service, flag)',
+            'Feature scaling: StandardScaler normalization on numerical features',
+            'Train/Test split: 80% training, 20% testing',
+            'Hyperparameters: Optimized depth, min_samples_split, criterion=gini',
+        ]),
+    ]
+    y = 45
+    for title, points in sections:
+        pdf.set_font('Helvetica', 'B', 14)
+        pdf.set_text_color(255, 255, 255)
+        pdf.set_xy(35, y)
+        pdf.cell(200, 10, title)
+        y += 12
+        for pt in points:
+            pdf.set_font('Helvetica', '', 10)
+            pdf.set_text_color(0, 240, 255)
+            pdf.set_xy(42, y)
+            pdf.cell(5, 7, '>')
+            pdf.set_text_color(170, 170, 170)
+            pdf.set_xy(50, y)
+            pdf.multi_cell(215, 6, pt)
+            y += 9
+        y += 5
+    pdf.slide_number(8, total_slides)
+    pdf.footer_info()
+    
+    # ---- SLIDE 9: Model Performance ----
+    pdf.add_page()
+    pdf.slide_bg()
+    pdf.set_font('Helvetica', 'B', 28)
+    pdf.set_text_color(0, 240, 255)
+    pdf.set_xy(30, 20)
+    pdf.cell(237, 15, 'MODEL PERFORMANCE')
+    pdf.set_draw_color(0, 240, 255)
+    pdf.line(30, 36, 135, 36)
+    
+    metrics_data = [
+        ('ACCURACY', '94.30%', 'Correct predictions out of total'),
+        ('PRECISION', '94.36%', 'True positives among predicted positives'),
+        ('RECALL', '94.30%', 'True positives among actual positives'),
+        ('F1-SCORE', '94.30%', 'Harmonic mean of precision and recall'),
+        ('AUC', '0.9463', 'Area Under ROC Curve'),
+    ]
+    y = 48
+    for name, val, desc in metrics_data:
+        pdf.set_draw_color(0, 240, 255)
+        pdf.set_line_width(0.3)
+        pdf.rect(35, y, 227, 20)
+        pdf.set_font('Helvetica', 'B', 12)
+        pdf.set_text_color(0, 240, 255)
+        pdf.set_xy(42, y + 3)
+        pdf.cell(60, 7, name)
+        pdf.set_font('Helvetica', 'B', 16)
+        pdf.set_text_color(0, 255, 65)
+        pdf.set_xy(110, y + 2)
+        pdf.cell(40, 8, val)
+        pdf.set_font('Helvetica', '', 9)
+        pdf.set_text_color(120, 120, 120)
+        pdf.set_xy(155, y + 5)
+        pdf.cell(100, 7, desc)
+        y += 26
+    pdf.slide_number(9, total_slides)
+    pdf.footer_info()
+    
+    # ---- SLIDE 10: Clustering ----
+    pdf.add_page()
+    pdf.slide_bg()
+    pdf.set_font('Helvetica', 'B', 28)
+    pdf.set_text_color(0, 240, 255)
+    pdf.set_xy(30, 20)
+    pdf.cell(237, 15, 'K-MEANS CLUSTERING')
+    pdf.set_draw_color(0, 240, 255)
+    pdf.line(30, 36, 135, 36)
+    
+    cluster_content = [
+        ('Purpose', 'Unsupervised learning to discover hidden patterns in network traffic without labeled data'),
+        ('Method', 'K-Means algorithm with PCA dimensionality reduction for 2D visualization'),
+        ('Results', 'Silhouette Score: 0.057 - Clusters naturally separate normal from malicious traffic'),
+        ('Visualization', '2D scatter plot with PCA projection showing cluster separation'),
+        ('Application', 'Can detect novel/zero-day attacks that the supervised model has never seen'),
+    ]
+    y = 48
+    for title, desc in cluster_content:
+        pdf.set_font('Helvetica', 'B', 12)
+        pdf.set_text_color(189, 0, 255)
+        pdf.set_xy(35, y)
+        pdf.cell(60, 8, title)
+        pdf.set_font('Helvetica', '', 10)
+        pdf.set_text_color(180, 180, 180)
+        pdf.set_xy(42, y + 10)
+        pdf.multi_cell(220, 6, desc)
+        y += 25
+    pdf.slide_number(10, total_slides)
+    pdf.footer_info()
+    
+    # ---- SLIDE 11: Real-Time Detection ----
+    pdf.add_page()
+    pdf.slide_bg()
+    pdf.set_font('Helvetica', 'B', 28)
+    pdf.set_text_color(0, 240, 255)
+    pdf.set_xy(30, 20)
+    pdf.cell(237, 15, 'REAL-TIME DETECTION')
+    pdf.set_draw_color(0, 240, 255)
+    pdf.line(30, 36, 140, 36)
+    
+    rt_features = [
+        ('Live Traffic Monitor', 'Tracks requests per second in real-time with visual charts', '#00F0FF'),
+        ('Anomaly Detection', 'Automatic threshold-based detection when traffic exceeds normal levels', '#FF003C'),
+        ('Visual Alerts', 'Immediate red alerts with attack classification when intrusion is detected', '#FAFF00'),
+        ('Security Logs', 'Complete timestamped log of all detected events for forensic analysis', '#00FF41'),
+        ('Radar Scanner', 'Interactive radar visualization showing network blips and sweep analysis', '#BD00FF'),
+    ]
+    y = 48
+    for title, desc, color in rt_features:
+        r, g, b = int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16)
+        pdf.set_fill_color(r, g, b)
+        pdf.rect(35, y + 2, 3, 14, 'F')
+        pdf.set_font('Helvetica', 'B', 12)
+        pdf.set_text_color(r, g, b)
+        pdf.set_xy(42, y)
+        pdf.cell(200, 8, title)
+        pdf.set_font('Helvetica', '', 10)
+        pdf.set_text_color(160, 160, 160)
+        pdf.set_xy(42, y + 10)
+        pdf.cell(200, 7, desc)
+        y += 25
+    pdf.slide_number(11, total_slides)
+    pdf.footer_info()
+    
+    # ---- SLIDE 12: DoS Simulation ----
+    pdf.add_page()
+    pdf.slide_bg()
+    pdf.set_font('Helvetica', 'B', 28)
+    pdf.set_text_color(255, 0, 60)
+    pdf.set_xy(30, 20)
+    pdf.cell(237, 15, 'DoS ATTACK SIMULATION')
+    pdf.set_draw_color(255, 0, 60)
+    pdf.line(30, 36, 145, 36)
+    
+    pdf.set_font('Helvetica', '', 11)
+    pdf.set_text_color(180, 180, 180)
+    pdf.set_xy(35, 48)
+    pdf.multi_cell(227, 7, 'To validate our IDS, we perform a controlled Denial of Service simulation against the live system. This demonstrates the detection capability in real-world conditions.')
+    
+    steps = [
+        ('Step 1: Baseline', 'Monitor shows normal traffic at 0-2 req/s with green status'),
+        ('Step 2: Launch Attack', 'Execute DoS script sending 100+ requests/second to /api/monitor/ping'),
+        ('Step 3: Detection', 'System detects anomaly within seconds, triggers red alert'),
+        ('Step 4: Classification', 'ML model classifies the traffic pattern as DoS attack'),
+        ('Step 5: Response', 'Security logs record the event with timestamp and severity'),
+    ]
+    y = 80
+    for title, desc in steps:
+        pdf.set_font('Helvetica', 'B', 11)
+        pdf.set_text_color(255, 0, 60)
+        pdf.set_xy(35, y)
+        pdf.cell(100, 8, title)
+        pdf.set_font('Helvetica', '', 10)
+        pdf.set_text_color(160, 160, 160)
+        pdf.set_xy(42, y + 9)
+        pdf.cell(220, 7, desc)
+        y += 22
+    pdf.slide_number(12, total_slides)
+    pdf.footer_info()
+    
+    # ---- SLIDE 13: Live Demo Plan ----
+    pdf.add_page()
+    pdf.slide_bg()
+    pdf.set_font('Helvetica', 'B', 28)
+    pdf.set_text_color(0, 255, 65)
+    pdf.set_xy(30, 20)
+    pdf.cell(237, 15, 'LIVE DEMO')
+    pdf.set_draw_color(0, 255, 65)
+    pdf.line(30, 36, 95, 36)
+    
+    demo_steps = [
+        ('1. Homepage', '~1 min', 'Show the 3D globe, animated stats, and system overview'),
+        ('2. Dashboard EDA', '~2 min', 'Explore attack distributions, protocol charts, and 3D network topology'),
+        ('3. Model Performance', '~2 min', 'Review Decision Tree metrics, ROC curve, and 3D threat visualization'),
+        ('4. Live Prediction', '~2 min', 'Demo Normal mode -> show NORMAL result, then Attack mode -> show INTRUSION'),
+        ('5. Clustering', '~1 min', 'Show K-Means scatter plot and cluster separation'),
+        ('6. Live Monitor', '~2 min', 'Launch DoS simulation and watch real-time detection'),
+    ]
+    y = 48
+    for step, time_est, desc in demo_steps:
+        pdf.set_font('Helvetica', 'B', 12)
+        pdf.set_text_color(255, 255, 255)
+        pdf.set_xy(35, y)
+        pdf.cell(100, 8, step)
+        pdf.set_font('Helvetica', '', 10)
+        pdf.set_text_color(0, 255, 65)
+        pdf.set_xy(200, y)
+        pdf.cell(30, 8, time_est, align='R')
+        pdf.set_font('Helvetica', '', 10)
+        pdf.set_text_color(150, 150, 150)
+        pdf.set_xy(42, y + 10)
+        pdf.cell(220, 7, desc)
+        y += 23
+    
+    pdf.set_font('Helvetica', 'I', 10)
+    pdf.set_text_color(0, 255, 65)
+    pdf.set_xy(35, 190)
+    pdf.cell(200, 7, 'Total estimated demo time: ~10 minutes')
+    pdf.slide_number(13, total_slides)
+    pdf.footer_info()
+    
+    # ---- SLIDE 14: Conclusion ----
+    pdf.add_page()
+    pdf.slide_bg()
+    pdf.set_font('Helvetica', 'B', 28)
+    pdf.set_text_color(0, 240, 255)
+    pdf.set_xy(30, 20)
+    pdf.cell(237, 15, 'CONCLUSION & FUTURE WORK')
+    pdf.set_draw_color(0, 240, 255)
+    pdf.line(30, 36, 160, 36)
+    
+    pdf.set_font('Helvetica', 'B', 14)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_xy(35, 48)
+    pdf.cell(200, 10, 'Key Achievements')
+    achievements = [
+        'Successfully built a full-stack IDS with real-time monitoring capabilities',
+        'Decision Tree model achieves 94.30% accuracy on NSL-KDD dataset',
+        'Interactive 3D visualizations provide intuitive security insights',
+        'Live DoS simulation validates the detection system in real conditions',
+    ]
+    y = 60
+    for a in achievements:
+        pdf.set_font('Helvetica', '', 10)
+        pdf.set_text_color(0, 255, 65)
+        pdf.set_xy(42, y)
+        pdf.cell(5, 7, '+')
+        pdf.set_text_color(180, 180, 180)
+        pdf.set_xy(50, y)
+        pdf.cell(210, 7, a)
+        y += 10
+    
+    pdf.set_font('Helvetica', 'B', 14)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_xy(35, y + 10)
+    pdf.cell(200, 10, 'Future Improvements')
+    future = [
+        'Implement deep learning models (LSTM, CNN) for sequence-based detection',
+        'Add more attack categories and real-world traffic datasets',
+        'Deploy as a network appliance for production environments',
+        'Integrate with SIEM systems for enterprise security monitoring',
+    ]
+    y += 22
+    for f in future:
+        pdf.set_font('Helvetica', '', 10)
+        pdf.set_text_color(189, 0, 255)
+        pdf.set_xy(42, y)
+        pdf.cell(5, 7, '>')
+        pdf.set_text_color(160, 160, 160)
+        pdf.set_xy(50, y)
+        pdf.cell(210, 7, f)
+        y += 10
+    pdf.slide_number(14, total_slides)
+    pdf.footer_info()
+    
+    # ---- SLIDE 15: Q&A ----
+    pdf.add_page()
+    pdf.slide_bg()
+    pdf.set_font('Helvetica', 'B', 48)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_xy(30, 65)
+    pdf.cell(237, 20, 'QUESTIONS?', align='C')
+    pdf.set_font('Helvetica', '', 14)
+    pdf.set_text_color(0, 240, 255)
+    pdf.set_xy(30, 95)
+    pdf.cell(237, 10, 'Thank you for your attention', align='C')
+    pdf.set_font('Helvetica', '', 11)
+    pdf.set_text_color(100, 100, 100)
+    pdf.set_xy(30, 120)
+    pdf.cell(237, 8, 'Zakarya Oukil | Master 1 Cybersecurity | HIS 2025/2026', align='C')
+    pdf.set_xy(30, 130)
+    pdf.cell(237, 8, 'CyberSentinelle - Network Intrusion Detection System', align='C')
+    pdf.slide_number(15, total_slides)
+    pdf.footer_info()
+    
+    # Save PDF
+    pdf_path = ROOT_DIR / 'presentation.pdf'
+    pdf.output(str(pdf_path))
+    
+    return FileResponse(
+        path=str(pdf_path),
+        filename='CyberSentinelle_Presentation.pdf',
+        media_type='application/pdf'
+    )
+
 # Include the router in the main app
 app.include_router(api_router)
 
