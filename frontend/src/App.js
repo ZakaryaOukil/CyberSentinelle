@@ -957,7 +957,7 @@ const PredictionPage = () => {
         </CyberBorder>
         <div>
           <h1 className="text-2xl font-mono font-bold tracking-wider">
-            PRÉDICTION <GlitchText className="text-green-400">LIVE</GlitchText>
+            PRÉDICTION <GlitchText className={isLight ? "text-green-600" : "text-green-400"}>LIVE</GlitchText>
           </h1>
           <p className="text-gray-500 text-sm font-mono">Classification du trafic réseau</p>
         </div>
