@@ -134,6 +134,7 @@ const CyberBorder = ({ children, className = "", glowColor = "cyan" }) => {
 
 // Chart Modal with Portal
 const ChartModal = ({ isOpen, onClose, title, children }) => {
+  const isLight = useTheme();
   if (!isOpen) return null;
   
   return createPortal(
@@ -143,7 +144,7 @@ const ChartModal = ({ isOpen, onClose, title, children }) => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className="fixed inset-0"
-        style={{ zIndex: 99999, backgroundColor: 'rgba(0, 0, 0, 0.95)' }}
+        style={{ zIndex: 99999, backgroundColor: isLight ? 'rgba(255,255,255,0.95)' : 'rgba(0, 0, 0, 0.95)' }}
         onClick={onClose}
         data-testid="chart-modal-overlay"
       />
@@ -155,10 +156,10 @@ const ChartModal = ({ isOpen, onClose, title, children }) => {
         className="fixed inset-0 flex items-center justify-center p-4 pointer-events-none"
         style={{ zIndex: 100000 }}
       >
-        <CyberBorder glowColor="cyan" className="bg-black/95 w-full max-w-5xl max-h-[90vh] overflow-auto pointer-events-auto">
-          <div className="flex items-center justify-between p-4 border-b border-cyan-500/20 sticky top-0 bg-black/95 backdrop-blur-sm">
-            <h3 className="text-lg font-mono tracking-wider text-cyan-400">{title}</h3>
-            <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-cyan-500/10 hover:text-cyan-400">
+        <CyberBorder glowColor="cyan" className={`${isLight ? 'bg-white' : 'bg-black/95'} w-full max-w-5xl max-h-[90vh] overflow-auto pointer-events-auto`}>
+          <div className={`flex items-center justify-between p-4 border-b sticky top-0 backdrop-blur-sm ${isLight ? 'border-teal-200 bg-white/95' : 'border-cyan-500/20 bg-black/95'}`}>
+            <h3 className={`text-lg font-mono tracking-wider ${isLight ? 'text-teal-700' : 'text-cyan-400'}`}>{title}</h3>
+            <Button variant="ghost" size="icon" onClick={onClose} className={isLight ? 'hover:bg-teal-500/10 hover:text-teal-600' : 'hover:bg-cyan-500/10 hover:text-cyan-400'}>
               <X className="w-5 h-5" />
             </Button>
           </div>
