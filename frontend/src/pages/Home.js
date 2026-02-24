@@ -110,6 +110,14 @@ export default function HomePage() {
             </motion.div>
             
             <h1 className="text-6xl md:text-8xl font-bold font-mono mb-6 leading-none">
+              <motion.div
+                className="flex items-center gap-5 mb-3"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3, duration: 0.8 }}
+              >
+                <img src="/logo.png" alt="CyberSentinelle" className="w-16 h-16 md:w-20 md:h-20" style={{ filter: 'brightness(0) invert(1) drop-shadow(0 0 8px rgba(0,240,255,0.6))' }} />
+              </motion.div>
               <motion.span 
                 className="text-white block"
                 initial={{ opacity: 0, x: -50 }}
