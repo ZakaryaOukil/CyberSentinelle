@@ -8,7 +8,8 @@ import {
   AlertTriangle, CheckCircle, Globe, Zap,
   BarChart3, PieChart, FileText, Maximize2,
   Radio, Home as HomeIcon, Terminal, ChevronRight,
-  Cpu, Lock, Eye, Wifi, Database, Server
+  Cpu, Lock, Eye, Wifi, Database, Server,
+  Sun, Moon, Presentation
 } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./components/ui/card";
