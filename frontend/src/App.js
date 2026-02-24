@@ -386,24 +386,49 @@ const Sidebar = ({ isOpen, setIsOpen, isLight, setIsLight }) => {
             })}
           </nav>
           
+          {/* Theme Toggle */}
+          <div className={`px-4 py-3 border-t transition-colors duration-300 ${isLight ? 'border-gray-200' : 'border-cyan-500/10'}`}>
+            <button
+              onClick={() => setIsLight(v => !v)}
+              className={`w-full flex items-center justify-between px-4 py-2.5 rounded-lg transition-all duration-300 font-mono text-xs tracking-wider ${
+                isLight 
+                  ? 'bg-gray-100 hover:bg-gray-200 text-gray-600' 
+                  : 'bg-white/5 hover:bg-white/10 text-gray-400'
+              }`}
+              data-testid="sidebar-theme-toggle"
+            >
+              <div className="flex items-center gap-3">
+                {isLight ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4 text-yellow-400" />}
+                <span>{isLight ? 'MODE SOMBRE' : 'MODE CLAIR'}</span>
+              </div>
+              <div className={`w-9 h-5 rounded-full relative transition-colors duration-300 ${isLight ? 'bg-teal-500' : 'bg-gray-600'}`}>
+                <motion.div 
+                  className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm"
+                  animate={{ left: isLight ? '18px' : '2px' }}
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                />
+              </div>
+            </button>
+          </div>
+
           {/* Footer */}
-          <div className="p-4 border-t border-cyan-500/10">
+          <div className={`p-4 border-t transition-colors duration-300 ${isLight ? 'border-gray-200' : 'border-cyan-500/10'}`}>
             <div className="flex items-center gap-2 mb-2">
-              <Database className="w-3 h-3 text-cyan-500/50" />
-              <span className="text-[10px] text-gray-600 font-mono">NSL-KDD Dataset</span>
+              <Database className={`w-3 h-3 ${isLight ? 'text-teal-500/50' : 'text-cyan-500/50'}`} />
+              <span className={`text-[10px] font-mono ${isLight ? 'text-gray-400' : 'text-gray-600'}`}>NSL-KDD Dataset</span>
             </div>
-            <div className="text-[10px] text-gray-600 tracking-wider font-mono">
+            <div className={`text-[10px] tracking-wider font-mono ${isLight ? 'text-gray-400' : 'text-gray-600'}`}>
               <div className="flex items-center gap-2">
-                <span className="text-cyan-500">◆</span>
+                <span className={isLight ? 'text-teal-500' : 'text-cyan-500'}>&#9670;</span>
                 <span>Master 1 Cybersécurité</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-cyan-500">◆</span>
+                <span className={isLight ? 'text-teal-500' : 'text-cyan-500'}>&#9670;</span>
                 <span>HIS - 2025/2026</span>
               </div>
               <div className="flex items-center gap-2 mt-1">
-                <span className="text-cyan-400">◆</span>
-                <span className="text-cyan-400">Zakarya Oukil</span>
+                <span className={isLight ? 'text-teal-600' : 'text-cyan-400'}>&#9670;</span>
+                <span className={isLight ? 'text-teal-600' : 'text-cyan-400'}>Zakarya Oukil</span>
               </div>
             </div>
           </div>
