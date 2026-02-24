@@ -88,6 +88,8 @@ const ParticleBackground = () => {
 
 // Glitch Text Effect
 const GlitchText = ({ children, className = "" }) => {
+  const isLight = useTheme();
+  if (isLight) return <span className={className}>{children}</span>;
   return (
     <span className={`relative inline-block ${className}`}>
       <span className="relative z-10">{children}</span>
