@@ -1311,6 +1311,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ThemeContext.Provider value={isLight}>
       <Routes>
         <Route path="/presentation" element={<PresentationPage />} />
         <Route path="*" element={
