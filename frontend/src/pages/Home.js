@@ -114,7 +114,7 @@ export default function HomePage() {
             
             <h1 className="text-6xl md:text-8xl font-bold font-mono mb-6 leading-none">
               <motion.span 
-                className="text-white block"
+                className={`block ${isLight ? 'text-gray-800' : 'text-white'}`}
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 0.8 }}
@@ -122,7 +122,7 @@ export default function HomePage() {
                 CYBER
               </motion.span>
               <motion.span 
-                className="shimmer-text block"
+                className={`block ${isLight ? 'shimmer-text-light' : 'shimmer-text'}`}
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6, duration: 0.8 }}
