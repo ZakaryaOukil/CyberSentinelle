@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback, Suspense, createContext, useContext } from "react";
+import React, { useState, useEffect, useCallback, Suspense } from "react";
 import { createPortal } from "react-dom";
 import { BrowserRouter, Routes, Route, NavLink, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
+import { ThemeContext, useTheme } from "./ThemeContext";
 import {
   Shield, Activity, Brain, Target, Menu, X,
   AlertTriangle, CheckCircle, Globe, Zap,
