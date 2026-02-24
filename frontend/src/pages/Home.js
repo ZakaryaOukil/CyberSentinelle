@@ -289,8 +289,8 @@ export default function HomePage() {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto"
         >
-          <div className="border border-white/10 bg-black/60 overflow-hidden backdrop-blur-sm holo-card">
-            <div className="flex items-center gap-2 px-4 py-3 bg-white/5 border-b border-white/10">
+          <div className={`border overflow-hidden backdrop-blur-sm ${isLight ? 'border-gray-200 bg-gray-900 rounded-lg shadow-lg' : 'border-white/10 bg-black/60 holo-card'}`}>
+            <div className={`flex items-center gap-2 px-4 py-3 border-b ${isLight ? 'bg-gray-800 border-gray-700' : 'bg-white/5 border-white/10'}`}>
               <div className="flex gap-2">
                 <div className="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-400 transition-colors cursor-pointer" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500/80 hover:bg-yellow-400 transition-colors cursor-pointer" />
