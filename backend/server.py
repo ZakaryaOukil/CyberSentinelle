@@ -590,8 +590,8 @@ async def predict_batch(file: UploadFile = File(...)):
     X = df_processed[feature_cols]
     
     # Predict
-    predictions = rf_model.predict(X)
-    probabilities = rf_model.predict_proba(X)
+    predictions = dt_model.predict(X)
+    probabilities = dt_model.predict_proba(X)
     
     results = []
     for i, (pred, proba) in enumerate(zip(predictions, probabilities)):
