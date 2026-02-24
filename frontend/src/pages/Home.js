@@ -246,7 +246,7 @@ export default function HomePage() {
               onClick={() => window.location.href = feature.link}
               className="cursor-pointer"
             >
-              <div className="holo-card p-6 h-full group relative overflow-hidden">
+              <div className={`p-6 h-full group relative overflow-hidden ${isLight ? 'bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow' : 'holo-card'}`}>
                 {/* Top accent line */}
                 <div className="absolute top-0 left-0 right-0 h-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" 
                   style={{ background: `linear-gradient(90deg, transparent, ${feature.color}, transparent)` }} />
@@ -257,16 +257,15 @@ export default function HomePage() {
                     style={{ 
                       borderColor: feature.color + '30',
                       backgroundColor: feature.color + '08',
-                      boxShadow: `0 0 0px ${feature.color}00`
                     }}
                   >
                     <feature.icon className="w-6 h-6 transition-transform duration-500 group-hover:scale-110" style={{ color: feature.color }} />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-mono text-sm mb-2 group-hover:text-cyan-400 transition-colors tracking-wider">
+                    <h3 className={`font-mono text-sm mb-2 transition-colors tracking-wider ${isLight ? 'text-gray-700 group-hover:text-teal-600' : 'group-hover:text-cyan-400'}`}>
                       {feature.title}
                     </h3>
-                    <p className="text-gray-600 text-xs leading-relaxed font-light">
+                    <p className={`text-xs leading-relaxed font-light ${isLight ? 'text-gray-500' : 'text-gray-600'}`}>
                       {feature.desc}
                     </p>
                   </div>
