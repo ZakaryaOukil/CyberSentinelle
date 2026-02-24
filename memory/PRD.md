@@ -1,25 +1,17 @@
-# CyberSentinelle - Network Intrusion Detection System
-## Product Requirements Document (PRD)
+# CyberSentinelle - PRD
 
-### Project Overview
-- **Author**: Zakarya Oukil | Master 1 Cybersecurite - HIS 2025/2026
-- **Stack**: React 19 + FastAPI + MongoDB + Scikit-learn
-- **Dataset**: NSL-KDD
-- **Primary Model**: Decision Tree (Arbre de Decision)
+## Stack: React 19 + FastAPI + MongoDB + Scikit-learn | Primary Model: Decision Tree | Dataset: NSL-KDD
 
----
-
-## Features (All Working)
-1. Homepage - Logo, shimmer title, typewriter, globe 3D, HexGrid, animated counters, feature cards, terminal
-2. Dashboard EDA - 3D Network Topology (17 nodes), charts (attacks, protocols, features)
-3. Model ML - **Decision Tree** as primary model, 3D Threat Visualization, comparison with RF, ROC, feature importance
-4. Prediction - Radar Scanner, Demo Normal/Attack, live classification via Decision Tree
-5. Clustering - K-Means PCA scatter, auto-loads
-6. Live Monitor - Real-time traffic, DoS simulation
+## All Features (Working)
+1. Homepage, Dashboard EDA (3D Network), Model ML (3D Threats), Prediction (Radar), Clustering, Live Monitor
+2. **NEW: Presentation page** (`/presentation`) - 14 slides, keyboard navigation, fullscreen, cyber theme
+3. **NEW: PDF download** (`/api/presentation/download`) - 15 slides, downloadable PDF with matching theme
 
 ## Changes (2026-02-24)
-- Primary model switched from Random Forest to **Decision Tree** (backend + all frontend labels)
-- User logo added to sidebar and homepage hero
-- Decision Tree metrics: Accuracy 94.30%, Precision 94.36%, AUC 0.9463
+- Switched model: Random Forest -> Decision Tree (all references updated)
+- Added user logo (sidebar only, removed from hero)
+- Created web presentation (14 slides, arrow keys, fullscreen with F)
+- Created PDF presentation endpoint (15 slides, cyber dark theme)
+- Both presentations in English, include live demo plan (~10 min)
 
 ## Remaining: Jupyter Notebook refinement (P1), Final QA (P2)
