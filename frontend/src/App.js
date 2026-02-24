@@ -594,9 +594,9 @@ const DashboardPage = () => {
         </CyberBorder>
         <div>
           <h1 className="text-2xl font-mono font-bold tracking-wider">
-            ANALYSE <GlitchText className="text-cyan-400">EXPLORATOIRE</GlitchText>
+            ANALYSE <GlitchText className={isLight ? "text-teal-600" : "text-cyan-400"}>EXPLORATOIRE</GlitchText>
           </h1>
-          <p className="text-gray-500 text-sm font-mono">Dataset NSL-KDD • Cliquer pour agrandir</p>
+          <p className={`text-sm font-mono ${isLight ? 'text-gray-500' : 'text-gray-500'}`}>Dataset NSL-KDD • Cliquer pour agrandir</p>
         </div>
       </motion.div>
 
