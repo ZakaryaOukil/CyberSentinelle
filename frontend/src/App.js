@@ -278,13 +278,13 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             >
               <div className="relative">
                 <motion.div 
-                  className="w-12 h-12 border-2 border-cyan-500/50 flex items-center justify-center bg-cyan-500/5"
+                  className="w-12 h-12 border-2 border-cyan-500/50 flex items-center justify-center bg-cyan-500/5 overflow-hidden"
                   animate={{ 
                     boxShadow: ["0 0 20px rgba(0,240,255,0.2)", "0 0 40px rgba(0,240,255,0.4)", "0 0 20px rgba(0,240,255,0.2)"]
                   }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
-                  <Shield className="w-6 h-6 text-cyan-400" />
+                  <img src="/logo.png" alt="CS" className="w-9 h-9 object-contain brightness-0 invert" style={{ filter: 'brightness(0) invert(1) drop-shadow(0 0 4px rgba(0,240,255,0.5))' }} />
                 </motion.div>
                 <motion.div 
                   className="absolute -top-1 -right-1 w-3 h-3 bg-green-500"
