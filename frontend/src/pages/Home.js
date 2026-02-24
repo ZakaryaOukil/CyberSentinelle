@@ -344,8 +344,8 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 md:px-12 border-t border-white/5">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-600">
+      <footer className={`py-8 px-6 md:px-12 border-t ${isLight ? 'border-gray-200' : 'border-white/5'}`}>
+        <div className={`flex flex-col md:flex-row justify-between items-center gap-4 text-sm ${isLight ? 'text-gray-500' : 'text-gray-600'}`}>
           <div className="font-mono">
             <span className="text-cyan-500">&lt;</span>CyberSentinelle<span className="text-cyan-500">/&gt;</span>
             <span className="mx-2 text-gray-800">|</span>
