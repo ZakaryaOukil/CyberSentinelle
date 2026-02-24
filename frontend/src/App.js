@@ -43,6 +43,10 @@ import RadarScanner from "./components/RadarScanner";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Theme context - shared across all components
+export const ThemeContext = createContext(false);
+export const useTheme = () => useContext(ThemeContext);
+
 const COLORS = {
   primary: "#00F0FF",
   secondary: "#BD00FF",
