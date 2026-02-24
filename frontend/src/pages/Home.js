@@ -4,6 +4,7 @@ import { Shield, ChevronRight, Terminal, Cpu, Activity, Download, Zap, Globe, Lo
 import { Button } from '../components/ui/button';
 import CyberGlobe from '../components/CyberGlobe';
 import HexGrid from '../components/HexGrid';
+import { useTheme } from '../ThemeContext';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
