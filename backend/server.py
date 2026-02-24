@@ -568,7 +568,7 @@ async def predict_batch(file: UploadFile = File(...)):
     """Make predictions on uploaded CSV file"""
     try:
         # Load model and preprocessors
-        rf_model = joblib.load(MODELS_DIR / 'random_forest.joblib')
+        dt_model = joblib.load(MODELS_DIR / 'decision_tree.joblib')
         encoders = joblib.load(MODELS_DIR / 'encoders.joblib')
         scaler = joblib.load(MODELS_DIR / 'scaler.joblib')
         feature_cols = joblib.load(MODELS_DIR / 'feature_cols.joblib')
