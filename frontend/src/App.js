@@ -308,21 +308,21 @@ const Sidebar = ({ isOpen, setIsOpen, isLight, setIsLight }) => {
           </div>
           
           {/* System Status */}
-          <div className="px-6 py-4 border-b border-cyan-500/10">
+          <div className={`px-6 py-4 border-b transition-colors duration-300 ${isLight ? 'border-gray-200' : 'border-cyan-500/10'}`}>
             <div className="flex items-center gap-2 text-xs">
               <motion.div 
                 className="w-2 h-2 bg-green-500 rounded-full"
                 animate={{ opacity: [1, 0.5, 1] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               />
-              <span className="text-green-400 font-mono">SYSTÈME ACTIF</span>
+              <span className={`font-mono ${isLight ? 'text-green-600' : 'text-green-400'}`}>SYSTÈME ACTIF</span>
             </div>
           </div>
           
           {/* Navigation */}
           <nav className="flex-1 py-4 overflow-y-auto">
             <div className="px-6 mb-3">
-              <span className="text-[10px] text-gray-600 tracking-[0.2em] uppercase">Navigation</span>
+              <span className={`text-[10px] tracking-[0.2em] uppercase ${isLight ? 'text-gray-400' : 'text-gray-600'}`}>Navigation</span>
             </div>
             {navItems.map((item, index) => {
               const isActive = location.pathname === item.path;
@@ -345,15 +345,15 @@ const Sidebar = ({ isOpen, setIsOpen, isLight, setIsLight }) => {
                     <motion.div
                       className={`flex items-center gap-3 px-4 py-3 transition-colors ${
                         isActive 
-                          ? 'bg-cyan-500/10 text-cyan-400' 
-                          : 'text-gray-400 hover:text-white'
+                          ? isLight ? 'bg-teal-500/10 text-teal-600' : 'bg-cyan-500/10 text-cyan-400'
+                          : isLight ? 'text-gray-500 hover:text-gray-800' : 'text-gray-400 hover:text-white'
                       }`}
                       whileHover={{ x: 5 }}
                     >
                       {/* Active indicator */}
                       {isActive && (
                         <motion.div
-                          className="absolute left-0 top-0 bottom-0 w-1 bg-cyan-400"
+                          className={`absolute left-0 top-0 bottom-0 w-1 ${isLight ? 'bg-teal-500' : 'bg-cyan-400'}`}
                           layoutId="activeIndicator"
                           transition={{ type: "spring", stiffness: 500, damping: 30 }}
                         />
@@ -362,7 +362,7 @@ const Sidebar = ({ isOpen, setIsOpen, isLight, setIsLight }) => {
                       {/* Hover glow */}
                       {(isHovered || isActive) && (
                         <motion.div
-                          className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-transparent"
+                          className={`absolute inset-0 bg-gradient-to-r ${isLight ? 'from-teal-500/5' : 'from-cyan-500/5'} to-transparent`}
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
