@@ -2597,7 +2597,7 @@ async def download_presentation():
         pdf.multi_cell(225, 6, f)
         y += 18
     pdf.set_font('Helvetica', 'I', 9)
-        pdf.set_text_color(80, 80, 80)
+    pdf.set_text_color(80, 80, 80)
     pdf.set_xy(35, 170)
     pdf.cell(200, 7, '* See live interactive charts and 3D visualizations on the web dashboard')
     pdf.slide_number(7, total_slides)
