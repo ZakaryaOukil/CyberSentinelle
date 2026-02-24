@@ -81,10 +81,10 @@ const slides = [
           { n: '05', t: 'Visualization', d: 'Interactive web dashboard with 3D visualizations' },
         ].map((obj, i) => (
           <motion.div key={i} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 + i * 0.1 }} className="flex gap-5 mb-5 items-start">
-            <span className="text-3xl font-mono font-bold text-cyan-500/20">{obj.n}</span>
+            <span className="text-3xl font-mono font-bold text-cyan-500/30">{obj.n}</span>
             <div>
-              <h4 className="text-base font-bold text-white">{obj.t}</h4>
-              <p className="text-sm text-gray-500">{obj.d}</p>
+              <h4 className="text-base font-bold text-cyan-400">{obj.t}</h4>
+              <p className="text-sm text-gray-400">{obj.d}</p>
             </div>
           </motion.div>
         ))}
