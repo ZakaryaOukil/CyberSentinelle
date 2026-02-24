@@ -781,7 +781,7 @@ const ModelPage = () => {
           </CyberBorder>
           <div>
             <h1 className="text-2xl font-mono font-bold tracking-wider">
-              MODÈLE <GlitchText className="text-purple-400">ML</GlitchText>
+              MODÈLE <GlitchText className={isLight ? "text-purple-600" : "text-purple-400"}>ML</GlitchText>
             </h1>
             <p className="text-gray-500 text-sm font-mono">Arbre de Décision (modèle principal)</p>
           </div>
