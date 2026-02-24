@@ -52,7 +52,7 @@ export default function HomePage() {
 
   const features = [
     { icon: Activity, title: "MONITORING TEMPS RÉEL", desc: "Surveillance du trafic réseau avec détection automatique des anomalies et alertes en temps réel", color: "#00F0FF", link: "/monitor" },
-    { icon: Cpu, title: "MACHINE LEARNING", desc: "Modèles Random Forest & Decision Tree entraînés sur le dataset NSL-KDD avec 97.7% de précision", color: "#BD00FF", link: "/model" },
+    { icon: Cpu, title: "MACHINE LEARNING", desc: "Modèle Arbre de Décision entraîné sur le dataset NSL-KDD avec analyse prédictive avancée", color: "#BD00FF", link: "/model" },
     { icon: Shield, title: "DÉTECTION D'INTRUSIONS", desc: "Classification des attaques DoS, Probe, R2L, U2R avec analyse des patterns en temps réel", color: "#00FF41", link: "/prediction" },
     { icon: Database, title: "ANALYSE EXPLORATOIRE", desc: "Visualisation 3D du réseau, distribution des attaques, clustering K-Means avancé", color: "#FAFF00", link: "/dashboard" },
     { icon: Wifi, title: "SIMULATION D'ATTAQUES", desc: "Testez le système avec des simulations DoS/DDoS contrôlées et observez la détection", color: "#FF003C", link: "/monitor" },
