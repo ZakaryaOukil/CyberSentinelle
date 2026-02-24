@@ -1253,73 +1253,78 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-[#030303] text-white overflow-x-hidden">
-        {/* Matrix Rain background */}
-        <MatrixRain opacity={0.04} />
-        
-        {/* Grid overlay */}
-        <div className="fixed inset-0 cyber-grid-bg pointer-events-none z-0" />
-        
-        {/* Scanlines */}
-        <div className="scanlines" />
-        
-        <Toaster 
-          position="top-right" 
-          toastOptions={{
-            style: { 
-              background: '#0a0a0a', 
-              border: '1px solid rgba(0,240,255,0.3)', 
-              color: '#fff', 
-              fontFamily: 'Share Tech Mono',
-              borderRadius: 0
-            }
-          }}
-        />
-        
-        <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
-        
-        {/* Mobile header */}
-        <motion.div 
-          className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-black/95 backdrop-blur-sm border-b border-cyan-500/20 px-4 py-3"
-          initial={{ y: -100 }}
-          animate={{ y: 0 }}
-        >
-          <div className="flex items-center justify-between">
-            <motion.div whileTap={{ scale: 0.9 }}>
-              <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)} className="hover:bg-cyan-500/10">
-                <Menu className="w-5 h-5 text-cyan-400" />
-              </Button>
+      <Routes>
+        <Route path="/presentation" element={<PresentationPage />} />
+        <Route path="*" element={
+          <div className="min-h-screen bg-[#030303] text-white overflow-x-hidden">
+            {/* Matrix Rain background */}
+            <MatrixRain opacity={0.04} />
+            
+            {/* Grid overlay */}
+            <div className="fixed inset-0 cyber-grid-bg pointer-events-none z-0" />
+            
+            {/* Scanlines */}
+            <div className="scanlines" />
+            
+            <Toaster 
+              position="top-right" 
+              toastOptions={{
+                style: { 
+                  background: '#0a0a0a', 
+                  border: '1px solid rgba(0,240,255,0.3)', 
+                  color: '#fff', 
+                  fontFamily: 'Share Tech Mono',
+                  borderRadius: 0
+                }
+              }}
+            />
+            
+            <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
+            
+            {/* Mobile header */}
+            <motion.div 
+              className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-black/95 backdrop-blur-sm border-b border-cyan-500/20 px-4 py-3"
+              initial={{ y: -100 }}
+              animate={{ y: 0 }}
+            >
+              <div className="flex items-center justify-between">
+                <motion.div whileTap={{ scale: 0.9 }}>
+                  <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)} className="hover:bg-cyan-500/10">
+                    <Menu className="w-5 h-5 text-cyan-400" />
+                  </Button>
+                </motion.div>
+                <span className="font-mono text-sm tracking-wider">
+                  <span className="text-white">CYBER</span>
+                  <span className="text-cyan-400">SENTINELLE</span>
+                </span>
+                <div className="w-10 flex justify-end">
+                  <motion.div 
+                    className="w-2 h-2 bg-green-500 rounded-full"
+                    animate={{ opacity: [1, 0.5, 1] }}
+                    transition={{ duration: 1, repeat: Infinity }}
+                  />
+                </div>
+              </div>
             </motion.div>
-            <span className="font-mono text-sm tracking-wider">
-              <span className="text-white">CYBER</span>
-              <span className="text-cyan-400">SENTINELLE</span>
-            </span>
-            <div className="w-10 flex justify-end">
-              <motion.div 
-                className="w-2 h-2 bg-green-500 rounded-full"
-                animate={{ opacity: [1, 0.5, 1] }}
-                transition={{ duration: 1, repeat: Infinity }}
-              />
-            </div>
+            
+            {/* Main content */}
+            <main className="lg:ml-[280px] min-h-screen pt-16 lg:pt-0 relative z-10">
+              <div className="p-6 md:p-8 lg:p-12">
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/monitor" element={<LiveMonitorPage />} />
+                    <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route path="/model" element={<ModelPage />} />
+                    <Route path="/prediction" element={<PredictionPage />} />
+                    <Route path="/clustering" element={<ClusteringPage />} />
+                  </Routes>
+                </Suspense>
+              </div>
+            </main>
           </div>
-        </motion.div>
-        
-        {/* Main content */}
-        <main className="lg:ml-[280px] min-h-screen pt-16 lg:pt-0 relative z-10">
-          <div className="p-6 md:p-8 lg:p-12">
-            <Suspense fallback={<LoadingSpinner />}>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/monitor" element={<LiveMonitorPage />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/model" element={<ModelPage />} />
-                <Route path="/prediction" element={<PredictionPage />} />
-                <Route path="/clustering" element={<ClusteringPage />} />
-              </Routes>
-            </Suspense>
-          </div>
-        </main>
-      </div>
+        } />
+      </Routes>
     </BrowserRouter>
   );
 }
