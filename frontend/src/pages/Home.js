@@ -323,8 +323,8 @@ export default function HomePage() {
               <div className="space-y-1 text-gray-400 pl-4 border-l border-cyan-500/20">
                 <div><span className="text-purple-400">Modèle</span>: Arbre de Décision (Decision Tree)</div>
                 <div><span className="text-purple-400">Dataset</span>: NSL-KDD (<span className="text-cyan-400">125,973</span> échantillons)</div>
-                <div><span className="text-purple-400">Accuracy</span>: <span className="text-green-400">97.70%</span></div>
-                <div><span className="text-purple-400">AUC</span>: <span className="text-green-400">0.9971</span></div>
+                <div><span className="text-purple-400">Accuracy</span>: <span className="text-green-400">94.30%</span></div>
+                <div><span className="text-purple-400">AUC</span>: <span className="text-green-400">0.9463</span></div>
                 <div><span className="text-purple-400">Classes</span>: Normal, DoS, Probe, R2L, U2R</div>
               </div>
               
