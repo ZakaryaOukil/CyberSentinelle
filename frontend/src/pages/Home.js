@@ -22,7 +22,7 @@ function TypeWriter({ text, delay = 0, speed = 40 }) {
     }, delay);
     return () => clearTimeout(timeout);
   }, [text, delay, speed]);
-  return <span>{displayed}<span className="animate-pulse text-cyan-400">|</span></span>;
+  return <span>{displayed}<span className={isLight ? "animate-pulse text-teal-600" : "animate-pulse text-cyan-400"}>|</span></span>;
 }
 
 function AnimatedCounter({ end, duration = 2000, suffix = '' }) {
