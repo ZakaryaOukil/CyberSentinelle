@@ -1279,52 +1279,53 @@ const ClusteringPage = () => {
 // Main App Component
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isLight, setIsLight] = useState(false);
 
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/presentation" element={<PresentationPage />} />
         <Route path="*" element={
-          <div className="min-h-screen bg-[#030303] text-white overflow-x-hidden">
-            {/* Matrix Rain background */}
-            <MatrixRain opacity={0.04} />
+          <div className={`min-h-screen overflow-x-hidden transition-colors duration-300 ${isLight ? 'bg-[#F5F5F0] text-gray-900' : 'bg-[#030303] text-white'}`}>
+            {/* Matrix Rain background - hidden in light mode */}
+            {!isLight && <MatrixRain opacity={0.04} />}
             
-            {/* Grid overlay */}
-            <div className="fixed inset-0 cyber-grid-bg pointer-events-none z-0" />
+            {/* Grid overlay - hidden in light mode */}
+            {!isLight && <div className="fixed inset-0 cyber-grid-bg pointer-events-none z-0" />}
             
-            {/* Scanlines */}
-            <div className="scanlines" />
+            {/* Scanlines - hidden in light mode */}
+            {!isLight && <div className="scanlines" />}
             
             <Toaster 
               position="top-right" 
               toastOptions={{
                 style: { 
-                  background: '#0a0a0a', 
-                  border: '1px solid rgba(0,240,255,0.3)', 
-                  color: '#fff', 
+                  background: isLight ? '#fff' : '#0a0a0a', 
+                  border: isLight ? '1px solid rgba(8,145,178,0.3)' : '1px solid rgba(0,240,255,0.3)', 
+                  color: isLight ? '#111' : '#fff', 
                   fontFamily: 'Share Tech Mono',
                   borderRadius: 0
                 }
               }}
             />
             
-            <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
+            <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} isLight={isLight} setIsLight={setIsLight} />
             
             {/* Mobile header */}
             <motion.div 
-              className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-black/95 backdrop-blur-sm border-b border-cyan-500/20 px-4 py-3"
+              className={`lg:hidden fixed top-0 left-0 right-0 z-30 backdrop-blur-sm px-4 py-3 transition-colors duration-300 ${isLight ? 'bg-white/95 border-b border-gray-200' : 'bg-black/95 border-b border-cyan-500/20'}`}
               initial={{ y: -100 }}
               animate={{ y: 0 }}
             >
               <div className="flex items-center justify-between">
                 <motion.div whileTap={{ scale: 0.9 }}>
-                  <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)} className="hover:bg-cyan-500/10">
-                    <Menu className="w-5 h-5 text-cyan-400" />
+                  <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)} className={isLight ? 'hover:bg-teal-500/10' : 'hover:bg-cyan-500/10'}>
+                    <Menu className={`w-5 h-5 ${isLight ? 'text-teal-600' : 'text-cyan-400'}`} />
                   </Button>
                 </motion.div>
                 <span className="font-mono text-sm tracking-wider">
-                  <span className="text-white">CYBER</span>
-                  <span className="text-cyan-400">SENTINELLE</span>
+                  <span className={isLight ? 'text-gray-800' : 'text-white'}>CYBER</span>
+                  <span className={isLight ? 'text-teal-600' : 'text-cyan-400'}>SENTINELLE</span>
                 </span>
                 <div className="w-10 flex justify-end">
                   <motion.div 
