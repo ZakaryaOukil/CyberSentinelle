@@ -60,7 +60,7 @@ export default function HomePage() {
   ];
 
   const stats = [
-    { value: 97.7, label: "PRÉCISION", suffix: "%", color: "#00F0FF" },
+    { value: 94.3, label: "PRÉCISION", suffix: "%", color: "#00F0FF" },
     { value: 125, label: "ÉCHANTILLONS", suffix: "K+", color: "#BD00FF" },
     { value: 41, label: "FEATURES", suffix: "", color: "#00FF41" },
     { value: 5, label: "CATÉGORIES", suffix: "", color: "#FAFF00" },
