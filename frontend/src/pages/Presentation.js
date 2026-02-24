@@ -7,10 +7,10 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const getSlides = (light) => {
   const t = {
     bg: light ? '#F5F5F0' : '#08080C',
-    text: light ? '#111111' : '#FFFFFF',
-    muted: light ? '#444444' : '#9CA3AF',
-    dim: light ? '#666666' : '#6B7280',
-    faint: light ? '#888888' : '#4B5563',
+    text: light ? '#0A0A0A' : '#FFFFFF',
+    muted: light ? '#1A1A1A' : '#E5E7EB',
+    dim: light ? '#333333' : '#D1D5DB',
+    faint: light ? '#555555' : '#9CA3AF',
     accent: light ? '#0891B2' : '#00F0FF',
     accentSoft: light ? 'rgba(8,145,178,0.08)' : 'rgba(0,240,255,0.05)',
     green: light ? '#059669' : '#00FF41',
