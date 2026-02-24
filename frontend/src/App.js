@@ -740,10 +740,10 @@ const ModelPage = () => {
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard icon={CheckCircle} label="ACCURACY (RF)" value={`${((rfMetrics.accuracy || 0) * 100).toFixed(2)}%`} color="primary" delay={0.1} />
-        <StatCard icon={Target} label="PRECISION (RF)" value={`${((rfMetrics.precision || 0) * 100).toFixed(2)}%`} color="secondary" delay={0.2} />
-        <StatCard icon={Eye} label="RECALL (RF)" value={`${((rfMetrics.recall || 0) * 100).toFixed(2)}%`} color="warning" delay={0.3} />
-        <StatCard icon={Activity} label="AUC (RF)" value={(rfMetrics.roc_data?.auc || 0).toFixed(4)} color="success" delay={0.4} />
+        <StatCard icon={CheckCircle} label="ACCURACY (DT)" value={`${((primaryMetrics.accuracy || 0) * 100).toFixed(2)}%`} color="primary" delay={0.1} />
+        <StatCard icon={Target} label="PRECISION (DT)" value={`${((primaryMetrics.precision || 0) * 100).toFixed(2)}%`} color="secondary" delay={0.2} />
+        <StatCard icon={Eye} label="RECALL (DT)" value={`${((primaryMetrics.recall || 0) * 100).toFixed(2)}%`} color="warning" delay={0.3} />
+        <StatCard icon={Activity} label="AUC (DT)" value={(primaryMetrics.roc_data?.auc || 0).toFixed(4)} color="success" delay={0.4} />
       </div>
 
       {/* 3D Threat Visualization */}
