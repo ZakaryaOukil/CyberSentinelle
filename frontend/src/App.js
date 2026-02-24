@@ -692,22 +692,24 @@ const ModelPage = () => {
 
   if (loading) return <LoadingSpinner />;
 
-  const rfMetrics = metrics?.results?.random_forest || {};
   const dtMetrics = metrics?.results?.decision_tree || {};
+  const rfMetrics = metrics?.results?.random_forest || {};
+  // Use Decision Tree as primary model
+  const primaryMetrics = dtMetrics;
 
   const comparisonData = [
-    { name: 'Accuracy', RF: (rfMetrics.accuracy || 0) * 100, DT: (dtMetrics.accuracy || 0) * 100 },
-    { name: 'Precision', RF: (rfMetrics.precision || 0) * 100, DT: (dtMetrics.precision || 0) * 100 },
-    { name: 'Recall', RF: (rfMetrics.recall || 0) * 100, DT: (dtMetrics.recall || 0) * 100 },
-    { name: 'F1-Score', RF: (rfMetrics.f1_score || 0) * 100, DT: (dtMetrics.f1_score || 0) * 100 }
+    { name: 'Accuracy', DT: (dtMetrics.accuracy || 0) * 100, RF: (rfMetrics.accuracy || 0) * 100 },
+    { name: 'Precision', DT: (dtMetrics.precision || 0) * 100, RF: (rfMetrics.precision || 0) * 100 },
+    { name: 'Recall', DT: (dtMetrics.recall || 0) * 100, RF: (rfMetrics.recall || 0) * 100 },
+    { name: 'F1-Score', DT: (dtMetrics.f1_score || 0) * 100, RF: (rfMetrics.f1_score || 0) * 100 }
   ];
 
-  const rocData = rfMetrics.roc_data ? rfMetrics.roc_data.fpr.map((fpr, i) => ({
-    fpr, tpr: rfMetrics.roc_data.tpr[i]
+  const rocData = primaryMetrics.roc_data ? primaryMetrics.roc_data.fpr.map((fpr, i) => ({
+    fpr, tpr: primaryMetrics.roc_data.tpr[i]
   })) : [];
 
-  const featureImportance = rfMetrics.feature_importance ? 
-    Object.entries(rfMetrics.feature_importance).map(([feature, importance]) => ({ feature, importance })).slice(0, 10) : [];
+  const featureImportance = primaryMetrics.feature_importance ? 
+    Object.entries(primaryMetrics.feature_importance).map(([feature, importance]) => ({ feature, importance })).slice(0, 10) : [];
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
