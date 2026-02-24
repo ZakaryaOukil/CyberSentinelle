@@ -727,7 +727,7 @@ const ModelPage = () => {
             <h1 className="text-2xl font-mono font-bold tracking-wider">
               MODÈLE <GlitchText className="text-purple-400">ML</GlitchText>
             </h1>
-            <p className="text-gray-500 text-sm font-mono">Random Forest & Decision Tree</p>
+            <p className="text-gray-500 text-sm font-mono">Arbre de Décision (modèle principal)</p>
           </div>
         </div>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
