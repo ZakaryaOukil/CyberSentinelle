@@ -274,7 +274,7 @@ const Sidebar = ({ isOpen, setIsOpen, isLight, setIsLight }) => {
         {/* Content */}
         <div className="relative z-10 flex flex-col h-full">
           {/* Header */}
-          <div className="p-6 border-b border-cyan-500/10">
+          <div className={`p-6 border-b transition-colors duration-300 ${isLight ? 'border-gray-200' : 'border-cyan-500/10'}`}>
             <motion.div 
               className="flex items-center gap-3"
               initial={{ opacity: 0, x: -20 }}
@@ -283,13 +283,13 @@ const Sidebar = ({ isOpen, setIsOpen, isLight, setIsLight }) => {
             >
               <div className="relative">
                 <motion.div 
-                  className="w-12 h-12 border-2 border-cyan-500/50 flex items-center justify-center bg-cyan-500/5 overflow-hidden"
-                  animate={{ 
+                  className={`w-12 h-12 border-2 flex items-center justify-center overflow-hidden transition-colors duration-300 ${isLight ? 'border-teal-500/50 bg-teal-500/5' : 'border-cyan-500/50 bg-cyan-500/5'}`}
+                  animate={isLight ? {} : { 
                     boxShadow: ["0 0 20px rgba(0,240,255,0.2)", "0 0 40px rgba(0,240,255,0.4)", "0 0 20px rgba(0,240,255,0.2)"]
                   }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
-                  <img src="/logo.png" alt="CS" className="w-9 h-9 object-contain brightness-0 invert" style={{ filter: 'brightness(0) invert(1) drop-shadow(0 0 4px rgba(0,240,255,0.5))' }} />
+                  <img src="/logo.png" alt="CS" className="w-9 h-9 object-contain" style={{ filter: isLight ? 'brightness(0.2) drop-shadow(0 0 2px rgba(8,145,178,0.3))' : 'brightness(0) invert(1) drop-shadow(0 0 4px rgba(0,240,255,0.5))' }} />
                 </motion.div>
                 <motion.div 
                   className="absolute -top-1 -right-1 w-3 h-3 bg-green-500"
@@ -299,10 +299,10 @@ const Sidebar = ({ isOpen, setIsOpen, isLight, setIsLight }) => {
               </div>
               <div>
                 <h1 className="font-mono text-xl font-bold tracking-wider">
-                  <span className="text-white">CYBER</span>
-                  <span className="text-cyan-400">SENTINELLE</span>
+                  <span className={isLight ? 'text-gray-800' : 'text-white'}>CYBER</span>
+                  <span className={isLight ? 'text-teal-600' : 'text-cyan-400'}>SENTINELLE</span>
                 </h1>
-                <p className="text-[10px] text-cyan-500/50 tracking-[0.2em]">SYSTÈME IDS v2.0</p>
+                <p className={`text-[10px] tracking-[0.2em] ${isLight ? 'text-teal-600/50' : 'text-cyan-500/50'}`}>SYSTÈME IDS v2.0</p>
               </div>
             </motion.div>
           </div>
