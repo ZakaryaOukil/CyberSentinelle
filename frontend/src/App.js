@@ -28,6 +28,7 @@ import "@/App.css";
 // Import pages
 import HomePage from "./pages/Home";
 import LiveMonitorPage from "./pages/Monitor";
+import PresentationPage from "./pages/Presentation";
 
 // Import 3D & effect components
 import MatrixRain from "./components/MatrixRain";
