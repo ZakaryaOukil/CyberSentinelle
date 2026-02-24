@@ -783,8 +783,8 @@ const ModelPage = () => {
                   <YAxis stroke="#505050" tick={{ fill: '#505050', fontSize: 10 }} domain={[0, 100]} />
                   <Tooltip contentStyle={{ backgroundColor: '#000', border: '1px solid #00F0FF' }} />
                   <Legend />
-                  <Bar dataKey="RF" name="Random Forest" fill={COLORS.primary} />
-                  <Bar dataKey="DT" name="Decision Tree" fill={COLORS.secondary} />
+                  <Bar dataKey="DT" name="Arbre de Décision" fill={COLORS.primary} />
+                  <Bar dataKey="RF" name="Random Forest" fill={COLORS.secondary} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
