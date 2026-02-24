@@ -257,17 +257,19 @@ const Sidebar = ({ isOpen, setIsOpen, isLight, setIsLight }) => {
       </AnimatePresence>
       
       {/* Sidebar */}
-      <aside className={`fixed left-0 top-0 bottom-0 w-[280px] z-50 flex flex-col transition-transform duration-300 lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        {/* Animated border effect */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-950 to-black" />
-        <div className="absolute top-0 right-0 bottom-0 w-px bg-gradient-to-b from-transparent via-cyan-500/50 to-transparent" />
+      <aside className={`fixed left-0 top-0 bottom-0 w-[280px] z-50 flex flex-col transition-all duration-300 lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        {/* Background */}
+        <div className={`absolute inset-0 transition-colors duration-300 ${isLight ? 'bg-white' : 'bg-gradient-to-b from-black via-gray-950 to-black'}`} />
+        <div className={`absolute top-0 right-0 bottom-0 w-px transition-colors duration-300 ${isLight ? 'bg-gray-200' : 'bg-gradient-to-b from-transparent via-cyan-500/50 to-transparent'}`} />
         
-        {/* Scanning line effect */}
-        <motion.div
-          className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent"
-          animate={{ top: ["0%", "100%", "0%"] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-        />
+        {/* Scanning line effect - hidden in light mode */}
+        {!isLight && (
+          <motion.div
+            className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent"
+            animate={{ top: ["0%", "100%", "0%"] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+          />
+        )}
         
         {/* Content */}
         <div className="relative z-10 flex flex-col h-full">
