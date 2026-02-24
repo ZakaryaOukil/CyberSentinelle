@@ -717,6 +717,7 @@ const DashboardPage = () => {
 
 // Model Page with animations
 const ModelPage = () => {
+  const isLight = useTheme();
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [training, setTraining] = useState(false);
