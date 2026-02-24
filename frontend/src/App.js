@@ -220,7 +220,7 @@ const StatCard = ({ icon: Icon, label, value, color, delay = 0 }) => (
 );
 
 // Sidebar Component - FIXED
-const Sidebar = ({ isOpen, setIsOpen }) => {
+const Sidebar = ({ isOpen, setIsOpen, isLight, setIsLight }) => {
   const location = useLocation();
   const [hoveredItem, setHoveredItem] = useState(null);
   
@@ -230,7 +230,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     { path: "/dashboard", icon: Activity, label: "DASHBOARD EDA", color: "green" },
     { path: "/model", icon: Brain, label: "MODÈLE ML", color: "purple" },
     { path: "/prediction", icon: Target, label: "PRÉDICTION", color: "yellow" },
-    { path: "/clustering", icon: PieChart, label: "CLUSTERING", color: "cyan" }
+    { path: "/clustering", icon: PieChart, label: "CLUSTERING", color: "cyan" },
+    { path: "/presentation", icon: FileText, label: "PRÉSENTATION", color: "cyan" }
   ];
 
   // Only close sidebar on mobile
