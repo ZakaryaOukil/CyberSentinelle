@@ -536,8 +536,8 @@ async def predict(input_data: PredictionInput):
     df_input[numerical_cols] = scaler.transform(df_input[numerical_cols])
     
     # Make prediction with the trained model
-    prediction = rf_model.predict(df_input)[0]
-    probabilities = rf_model.predict_proba(df_input)[0]
+    prediction = dt_model.predict(df_input)[0]
+    probabilities = dt_model.predict_proba(df_input)[0]
     
     # Get actual probabilities from the model
     normal_prob = float(probabilities[0])
