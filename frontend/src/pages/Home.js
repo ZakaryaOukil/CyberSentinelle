@@ -189,8 +189,8 @@ export default function HomePage() {
       </section>
 
       {/* Stats with counter animation */}
-      <section className="py-16 border-t border-white/5 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/[0.02] to-transparent" />
+      <section className={`py-16 border-t relative ${isLight ? 'border-gray-200' : 'border-white/5'}`}>
+        <div className={`absolute inset-0 ${isLight ? '' : 'bg-gradient-to-b from-transparent via-cyan-500/[0.02] to-transparent'}`} />
         <motion.div 
           className="grid grid-cols-2 md:grid-cols-4 gap-4 px-6 md:px-12"
           variants={containerVariants}
@@ -202,16 +202,16 @@ export default function HomePage() {
             <motion.div
               key={stat.label}
               variants={itemVariants}
-              className="text-center p-8 border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-500 holo-card group"
+              className={`text-center p-8 border transition-all duration-500 group ${isLight ? 'border-gray-200 bg-white hover:bg-gray-50 rounded-lg shadow-sm' : 'border-white/5 bg-white/[0.02] hover:bg-white/[0.05] holo-card'}`}
               whileHover={{ borderColor: stat.color + '40' }}
             >
               <div 
                 className="text-4xl md:text-6xl font-mono font-bold mb-3 transition-all duration-500"
-                style={{ color: stat.color, textShadow: `0 0 20px ${stat.color}40` }}
+                style={{ color: stat.color, textShadow: isLight ? 'none' : `0 0 20px ${stat.color}40` }}
               >
                 <AnimatedCounter end={stat.value} suffix={stat.suffix} />
               </div>
-              <div className="text-[10px] text-gray-500 tracking-[0.3em] uppercase">{stat.label}</div>
+              <div className={`text-[10px] tracking-[0.3em] uppercase ${isLight ? 'text-gray-400' : 'text-gray-500'}`}>{stat.label}</div>
               <div className="glow-divider mt-4 group-hover:opacity-60 transition-opacity" style={{ background: `linear-gradient(90deg, transparent, ${stat.color}, transparent)` }} />
             </motion.div>
           ))}
