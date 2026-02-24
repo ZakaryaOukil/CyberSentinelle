@@ -9,6 +9,7 @@ import { useTheme } from '../ThemeContext';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function TypeWriter({ text, delay = 0, speed = 40 }) {
+  const isLight = useTheme();
   const [displayed, setDisplayed] = useState('');
   useEffect(() => {
     const timeout = setTimeout(() => {
