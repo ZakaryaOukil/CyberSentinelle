@@ -99,20 +99,32 @@ const GlitchText = ({ children, className = "" }) => {
 
 // Cyber Border Animation
 const CyberBorder = ({ children, className = "", glowColor = "cyan" }) => {
-  const colorMap = {
+  const isLight = useTheme();
+  const darkColorMap = {
     cyan: "border-cyan-500/50 hover:border-cyan-400 hover:shadow-[0_0_30px_rgba(0,240,255,0.3)]",
     red: "border-red-500/50 hover:border-red-400 hover:shadow-[0_0_30px_rgba(255,0,60,0.3)]",
     green: "border-green-500/50 hover:border-green-400 hover:shadow-[0_0_30px_rgba(0,255,65,0.3)]",
     purple: "border-purple-500/50 hover:border-purple-400 hover:shadow-[0_0_30px_rgba(189,0,255,0.3)]",
     yellow: "border-yellow-500/50 hover:border-yellow-400 hover:shadow-[0_0_30px_rgba(250,255,0,0.3)]",
   };
+  const lightColorMap = {
+    cyan: "border-teal-200 hover:border-teal-400 hover:shadow-[0_0_20px_rgba(8,145,178,0.1)]",
+    red: "border-red-200 hover:border-red-400 hover:shadow-[0_0_20px_rgba(220,38,38,0.1)]",
+    green: "border-emerald-200 hover:border-emerald-400 hover:shadow-[0_0_20px_rgba(5,150,105,0.1)]",
+    purple: "border-purple-200 hover:border-purple-400 hover:shadow-[0_0_20px_rgba(124,58,237,0.1)]",
+    yellow: "border-amber-200 hover:border-amber-400 hover:shadow-[0_0_20px_rgba(202,138,4,0.1)]",
+  };
+  const colorMap = isLight ? lightColorMap : darkColorMap;
+  const bgClass = isLight ? 'bg-white' : '';
   
   return (
-    <div className={`relative border transition-all duration-500 ${colorMap[glowColor]} ${className}`}>
-      <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-current -translate-x-px -translate-y-px" />
-      <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-current translate-x-px -translate-y-px" />
-      <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-current -translate-x-px translate-y-px" />
-      <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-current translate-x-px translate-y-px" />
+    <div className={`relative border transition-all duration-500 ${colorMap[glowColor]} ${bgClass} ${className}`}>
+      {!isLight && <>
+        <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-current -translate-x-px -translate-y-px" />
+        <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-current translate-x-px -translate-y-px" />
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-current -translate-x-px translate-y-px" />
+        <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-current translate-x-px translate-y-px" />
+      </>}
       {children}
     </div>
   );
