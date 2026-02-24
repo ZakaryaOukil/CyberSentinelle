@@ -905,6 +905,7 @@ const ModelPage = () => {
 
 // Prediction Page
 const PredictionPage = () => {
+  const isLight = useTheme();
   const [formData, setFormData] = useState({
     duration: 0, protocol_type: 'tcp', service: 'http', flag: 'SF',
     src_bytes: 0, dst_bytes: 0, land: 0, wrong_fragment: 0, urgent: 0,
