@@ -120,7 +120,9 @@ const CyberBorder = ({ children, className = "", glowColor = "cyan" }) => {
   const bgClass = isLight ? 'bg-white' : '';
   
   return (
-    <div className={`relative border transition-all duration-500 ${colorMap[glowColor]} ${bgClass} ${className}`}>
+    <div className={`relative border transition-all duration-500 ${colorMap[glowColor]} ${bgClass} ${className}`}
+      style={isLight ? { backgroundColor: 'white' } : {}}
+    >
       {!isLight && <>
         <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-current -translate-x-px -translate-y-px" />
         <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-current translate-x-px -translate-y-px" />
