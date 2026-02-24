@@ -47,6 +47,7 @@ function AnimatedCounter({ end, duration = 2000, suffix = '' }) {
 }
 
 export default function HomePage() {
+  const isLight = useTheme();
   const handleDownloadNotebook = async () => {
     try { window.open(`${BACKEND_URL}/api/notebook/download`, '_blank'); }
     catch (error) { console.error('Erreur:', error); }
