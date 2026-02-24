@@ -1172,7 +1172,7 @@ const ClusteringPage = () => {
           </CyberBorder>
           <div>
             <h1 className="text-2xl font-mono font-bold tracking-wider">
-              CLUSTERING <GlitchText className="text-yellow-400">K-MEANS</GlitchText>
+              CLUSTERING <GlitchText className={isLight ? "text-yellow-600" : "text-yellow-400"}>K-MEANS</GlitchText>
             </h1>
             <p className="text-gray-500 text-sm font-mono">Analyse non supervisée</p>
           </div>
