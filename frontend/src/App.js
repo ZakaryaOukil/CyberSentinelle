@@ -205,37 +205,40 @@ const ClickableChart = ({ title, children, chartContent }) => {
 };
 
 // Animated Stat Card
-const StatCard = ({ icon: Icon, label, value, color, delay = 0 }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay, type: "spring", stiffness: 100 }}
-  >
-    <CyberBorder glowColor={color} className="bg-black/50 p-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-[10px] text-gray-500 tracking-widest uppercase mb-1">{label}</p>
-          <motion.p 
-            className="text-2xl font-mono font-bold"
-            style={{ color: COLORS[color] || color }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: delay + 0.2 }}
+const StatCard = ({ icon: Icon, label, value, color, delay = 0 }) => {
+  const isLight = useTheme();
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, type: "spring", stiffness: 100 }}
+    >
+      <CyberBorder glowColor={color} className={`${isLight ? 'bg-white' : 'bg-black/50'} p-4`}>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className={`text-[10px] tracking-widest uppercase mb-1 ${isLight ? 'text-gray-400' : 'text-gray-500'}`}>{label}</p>
+            <motion.p 
+              className="text-2xl font-mono font-bold"
+              style={{ color: COLORS[color] || color }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: delay + 0.2 }}
+            >
+              {value}
+            </motion.p>
+          </div>
+          <motion.div 
+            className="p-3"
+            style={{ backgroundColor: `${COLORS[color] || color}15`, border: `1px solid ${COLORS[color] || color}30` }}
+            whileHover={{ scale: 1.1, rotate: 5 }}
           >
-            {value}
-          </motion.p>
+            <Icon className="w-5 h-5" style={{ color: COLORS[color] || color }} />
+          </motion.div>
         </div>
-        <motion.div 
-          className="p-3"
-          style={{ backgroundColor: `${COLORS[color] || color}15`, border: `1px solid ${COLORS[color] || color}30` }}
-          whileHover={{ scale: 1.1, rotate: 5 }}
-        >
-          <Icon className="w-5 h-5" style={{ color: COLORS[color] || color }} />
-        </motion.div>
-      </div>
-    </CyberBorder>
-  </motion.div>
-);
+      </CyberBorder>
+    </motion.div>
+  );
+};
 
 // Sidebar Component - FIXED
 const Sidebar = ({ isOpen, setIsOpen, isLight, setIsLight }) => {
